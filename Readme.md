@@ -13,7 +13,8 @@ Github Address: https://github.com/NaiboWang/CommandlineConfig
 ### 安装方法 Installation
 
 两种方法安装此库：
-Two ways to install this library:
+
+There are two ways to install this library:
 
 * 1. 通过pip安装：
   
