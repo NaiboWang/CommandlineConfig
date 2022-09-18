@@ -175,8 +175,8 @@ If the parameter value specified on the command line parameters can not be force
 * 命令行配置为输入Bool类型时，需使用0和1来表示False和True： --normalization 0即将配置中normalization的参数值设定为False。
 * When the command line is configured as input Bool type, you need to use 0 and 1 to indicate False and True: --normalization 0 is to set the parameter value of normalization in the configuration to False.
 
-* 命令行参数设置为输入List类型时，如果list中元素是字符串，需要在每个单引号或双引号前加入反斜线\以正确解析，否则参数值会被视作int或float类型。如果命令行中有空格会被自动合并。
-* When the command line argument is set to the input List type, if the element in the list is a string, you need to add a backslash \ before each single or double quote to parse it correctly, otherwise the argument value will be treated as an int or float type. If there are spaces in the command line they will be merged automatically.
+* 命令行参数设置为输入List类型时，如果list中元素是字符串，则必须使用**单引号**，并需要在每个单引号前加入反斜线\以正确解析，否则参数值会被视作int或float类型。如果命令行中有空格会被自动合并。
+* When the command line argument is set to the input List type, if the element in the list is a string, you must you single quote and need to add a backslash \ before each single quote to parse it correctly, otherwise the argument value will be treated as an int or float type. If there are spaces in the command line they will be merged automatically.
 
 如参数可设置为： 
 

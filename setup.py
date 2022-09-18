@@ -20,3 +20,20 @@ setuptools.setup(
         "Operating System :: OS Independent",
     ],
 )
+
+
+
+from commandline_config import Config
+preset_config = {
+    "index": 1, # Index of party
+    "dataset": "mnist",
+    'lr': 0.01, # learning rate
+    'normalization': True,
+    "multi-information":[1,0.5,'test',"TEST"]
+  }
+config = Config(preset_config)
+print(config)
+print(config.dataset, config["index"])
+config.index=15
+
+
