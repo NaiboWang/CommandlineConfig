@@ -23,7 +23,7 @@ There are two ways to install this library:
     pip install commandline_config
   ```
 
-* 2. 直接导入github项目中/commandline_config文件夹下的commandline_config.py文件到自己的项目目录中即可,需要安装依赖包prettytable:
+* 2. 直接导入github项目中/commandline_config文件夹下的commandline_config.py文件到自己的项目目录中即可，需要安装依赖包prettytable:
 * 2. Import the commandline_config.py file directly from the /commandline_config folder of the github project into your own project directory, you need to install the dependency package prettytable:
 
     ```shell
@@ -43,24 +43,25 @@ There are two ways to install this library:
 * 1. Set the parameter name and initial value in JSON/Python Dict format, and add the parameter description by # comment.
 
     ```python
-      preset_config = {"index": 1, # Index of party
-                      "dataset": "mnist",
-                      'lr': 0.01, # learning rate 
-                      'normalization': True,
-                      "multi-information":[1,0.5,'test',"TEST"]
-                      }
+      preset_config = {
+        "index": 1, # Index of party
+        "dataset": "mnist",
+        'lr': 0.01, # learning rate 
+        'normalization': True,
+        "multi-information":[1,0.5,'test',"TEST"]
+      }
     ```
   
   即生成了程序的初始配置，在preset_config dict中定义的每一个key为参数名称，每一个value为参数的初始值，同时，参数的初始值类型会根据设置的值的类型自动检测。
 
   That is, the initial configuration of the program is generated. Each key defined in preset_config dict is the parameter name and each value is the initial value of the parameter, and at the same time, the initial value type of the parameter is automatically detected according to the type of the set value.
 
-  如上方配置中包含五个参数：index, dataset, batch, normalization和 multi-information, 其中参数**index**的类型会自动检测为**int**，默认值为**1**，描述为“Index of party”。
+  如上方配置中包含五个参数：index， dataset， batch， normalization和 multi-information， 其中参数**index**的类型会自动检测为**int**，默认值为**1**，描述为“Index of party”。
 
   The above configuration contains five parameters: index, dataset, batch, normalization and multi-information, where the type of the parameter **index** is automatically detected as **int**, the default value is **1** and the description is "Index of party".
 
 
-  同理，其余四个参数的的类型和默认值分别为string:"mnist"; float:0.01; bool:True; List:[1,0.5,'test',"TEST"]。
+  同理，其余四个参数的的类型和默认值分别为string:"mnist"； float:0.01； bool:True； List:[1,0.5,'test',"TEST"]。
 
   Similarly, the type and default values of the remaining four parameters are string: "mnist"; float:0.01; bool:True; List:[1,0.5,'test', "TEST"].
 
@@ -71,6 +72,7 @@ There are two ways to install this library:
     if __name__ == '__main__':
         config = Config(preset_config)
         # 或者给配置设定名称：
+        # Or give the configuration a name:
         config_with_name = Config(preset_config, name="Federated Learning Experiments")
     ```
 
@@ -86,7 +88,7 @@ There are two ways to install this library:
 
   输出结果为：
 
-  The output results are.
+  The output results are:
   
   ```
     Configurations of Federated Learning Experiments: 
@@ -177,6 +179,7 @@ If the parameter value specified on the command line parameters can not be force
 * When the command line argument is set to the input List type, if the element in the list is a string, you need to add a backslash \ before each single or double quote to parse it correctly, otherwise the argument value will be treated as an int or float type. If there are spaces in the command line they will be merged automatically.
 
 如参数可设置为： 
+
 If the parameters can be set as follows:
 
 ```
