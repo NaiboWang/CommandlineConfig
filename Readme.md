@@ -4,6 +4,8 @@
 
 A library for users to write (experiment in research) configurations in Python Dict or JSON format, while can read parameters from the command line.
 
+标签 Labels： Python, Command Line, commandline, config, configuration, parameters, 命令行，配置，传参，参数值修改。
+
 Github网址：https://github.com/NaiboWang/CommandlineConfig
 
 Github Address: https://github.com/NaiboWang/CommandlineConfig
@@ -61,9 +63,9 @@ There are two ways to install this library:
   The above configuration contains five parameters: index, dataset, batch, normalization and multi-information, where the type of the parameter **index** is automatically detected as **int**, the default value is **1** and the description is "Index of party".
 
 
-  同理，其余四个参数的的类型和默认值分别为string:"mnist"； float:0.01； bool:True； List:[1,0.5,'test',"TEST"]。
+  同理，其余四个参数的的类型和默认值分别为string:"mnist"； float:0.01； bool:True； list:[1,0.5,'test',"TEST"]。
 
-  Similarly, the type and default values of the remaining four parameters are string: "mnist"; float:0.01; bool:True; List:[1,0.5,'test', "TEST"].
+  Similarly, the type and default values of the remaining four parameters are string: "mnist"; float:0.01; bool:True; list:[1,0.5,'test', "TEST"].
 
 * 2. 在任意函数中通过preset_config dict创建配置类对象。
 * 2. Create a configuration class object by preset_config dict in any function you want.
@@ -77,6 +79,7 @@ There are two ways to install this library:
     ```
 
   即成功生成配置对象。
+
   This means that the configuration object is successfully generated.
 
 * 3. 可通过print直接打印参数配置：
@@ -157,52 +160,58 @@ A deep copy of the configuration object can be made by the *deepcopy* method:
 ```python
 from copy import deepcopy
 copy_config = deepcopy(config)
-copy_config.index=15 # Modify new configuration's parameter value
+# 修改新复制的配置参数值，不会影响原配置
+# Modify new configuration's parameter value, will not affect the orignal configuration
+copy_config.index=15 
 ```
 
 ## 注意事项 Matters needs caution
 
 * 此包无法和argparse包同时读取命令行参数，因此使用此包请不要同时使用args = parser.parse_args()来读取命令行参数。
-* This library cannot read command line arguments at the same time as the argparse library, so please do not use args = parser.parse_args() to read command line arguments while using this library.
+* This library cannot read command line arguments at the same time with the argparse library, so please do not use args = parser.parse_args() to read command line arguments while using this library.
 
 * 参数的类型将自动检测为preset_config中设定的初始值类型，同时命令行参数的值将被强制转换为对应类型值，如上面的preset_config中的index的默认值为1，则参数index的类型为int，初始值为1，此时如在命令行中指定--index 15.5则将会自动将参数index赋值为15，即自动将15.5强制转换为int类型。
 * The type of the parameter will be automatically detected as the same type of the initial value set in preset_config, and the value of the command line parameter will be forced converted to the corresponding type value, such as the default value of index in the above preset_config dict is 1, then the type of the parameter index is **int** with the initial value of 1. If you specify --index 15.5 on the command line, the parameter index will be automatically assigned to value 15, that is, 15.5 will be automatically forced converted to int type.
 
-无法转换的命令行参数将会报错，如命令行指定--index sdf，由于sdf无法转换为int类型，因此会报错。
+  无法转换的命令行参数将会报错，如命令行指定--index sdf，由于sdf字符串无法强制转换为int类型，因此会报错。
 
-If the parameter value specified on the command line parameters can not be forced converted to specific type, it will report an error, such as if the command line specified --index sdf, as sdf can not be converted to int type, so it will report an error.
+  If the parameter value specified on the command line parameters can not be forcedly converted to specific type, it will report an error, such as if the command line specified --index sdf, as sdf with orignal format of string can not be converted to int type, so it will report an error.
 
 * 命令行配置为输入Bool类型时，需使用0和1来表示False和True： --normalization 0即将配置中normalization的参数值设定为False。
 * When the command line is configured as input Bool type, you need to use 0 and 1 to indicate False and True: --normalization 0 is to set the parameter value of normalization in the configuration to False.
 
-* 命令行参数设置为输入List类型时，如果list中元素是字符串，则必须使用**双引号**，并需要在每个双引号前加入反斜线\以正确解析，否则参数值会被视作int或float类型。如果命令行中有空格会被自动合并。
-* When the command line argument is set to the input List type, if the element in the list is a string, you must use **double** quote and need to add a backslash \ before each double quote to parse it correctly, otherwise the argument value will be treated as an int or float type. If there are spaces in the command line they will be merged automatically.
+* 命令行参数设置为输入list类型时，如果list中元素是字符串，则必须使用**双引号**，并需要在每个双引号前加入反斜线\以正确解析，否则参数值会被视作int或float类型。如果命令行中有空格会被自动合并。
+* When the command line argument is set to the input list type, if the element in the list is a string, you must use **double** quote and need to add a backslash \ before each double quote to parse it correctly, otherwise the argument value will be treated as an int or float type. If there are spaces in the command line they will be merged automatically.
 
-如参数可设置为： 
+  如参数可设置为： 
 
-If the parameters can be set as follows:
+  If the parameters can be set as follows:
 
-```
-python test.py --array [1,2.3,\"sdf\"] 
-```
+  ```
+  python test.py --array [1,2.3,\"sdf\"] 
+  ```
 
-即可正确解析array参数，其值为一个List，内容为[1,2.3,'sdf'],即一个包含int, float, string类型的List。
+  即可正确解析array参数，其值为一个list，内容为[1,2.3,'sdf'],即一个包含int, float, string类型的list。
 
-That can correctly resolve the array parameter whose value is a List, and the content of [1,2.3,'sdf', "qwe"], that is, a List containing int, float, string type of data simultaneously.
+  That can correctly resolve the array parameter whose value is a list, and the content of [1,2.3,'sdf', "qwe"], that is, a list containing int, float, string type of data simultaneously.
 
-* 暂不支持嵌套对象，目前支持的参数类型为：int, float, string, bool和List。
-* Nested objects are not supported at the moment. The currently supported parameter types are: int, float, string, bool and List.
+* 暂不支持嵌套对象，目前支持的参数类型为：int, float, string, bool和list。
+* Nested objects are not supported at the moment. The currently supported parameter types are: int, float, string, bool and list.
 
 * 命令行中传递的参数名称**必须提前在preset_config中定义，否则会报错**，如：
-* The name of the parameter passed on the command line ** must be defined in preset_config in advance, otherwise an error will be reported **, e.g.
+* The name of the parameter passed on the command line **must be defined in preset_config in advance, otherwise an error will be reported**, e.g.
 
-```python
-    python test.py --arg1 1
-```
+  ```python
+      python test.py --arg1 1
+  ```
 
-由于参数名arg1没有在preset_config中定义，因此会报错，提示arg1参数未定义，设置此功能是为了进行参数完整性检查。
+  由于参数名arg1没有在preset_config中定义，因此会报错，提示arg1参数未定义，设置此功能是为了进行参数完整性检查，从而避免通过命令行输入错误参数名。
 
-Since the parameter name *arg1* is not defined in preset_config dict, an error is reported indicating that the arg1 parameter is not defined. This function is set to perform parameter integrity checking.
+  Since the parameter name *arg1* is not defined in preset_config dict, an error is reported indicating that the arg1 parameter is not defined. This function is set to perform parameter integrity checking to avoid entering incorrect parameter names through the command line.
+
+* 在ZSH Shell环境下传递list参数时，如果出现`zsh: no matches found`的错误，则需要在`~/.zshrc`文件的最后加入一行`setopt no_nomatch`，保存后在命令行运行`source ~/.zshrc`刷新zsh即可。
+* If `zsh: no matches found` occurs when passing list arguments in the ZSH Shell environment, please add a line `setopt no_nomatch` at the end of the `~/.zshrc` file, after save it then run `source ~/.zshrc` on the command line to refresh ZSH, then the problem will be solved.
+
 
 ### 完整转换示例 Full conversion example
 
@@ -324,9 +333,9 @@ if __name__ == '__main__':
 
 The following describes the author's personal reasons for developing and the benefits/conveniences of this package.
 
-对于经常跑科研实验的朋友们，你们是不是经常需要在python文件开头设置大量的命令行参数，并在下方代码中以args.*的方式调用：
+对于经常跑科研实验的朋友们，大家是不是经常需要在python文件开头设置大量的命令行参数，并在下方代码中以args.*的方式调用：
 
-For those of you who often run research experiments, do you often need to set a lot of command line arguments at the beginning of a python file and call them in the following code as args.*：
+For us who often run research experiments, do you often need to set a lot of command line arguments at the beginning of a python file and call them in the following code as args.*：
 
 比如下面的这段示例：
 
@@ -341,7 +350,7 @@ args = parser.parse_args()
 print(args.index)
 ```
 
-每多一个参数，代码中就会多一行parser.add_argument，手写每个参数的配置时，如名称需要加--，还有修改默认值，类型以及描述的时候很麻烦，最后也会导致自己的代码很冗长，维护不便。
+每多一个参数，代码中就会多一行parser.add_argument，手写每个参数的配置时会很繁琐，如名称需要加--，还有修改默认值，类型以及描述的时候很麻烦，最后也会导致自己的代码很冗长，维护不便。
 
 With one more additional parameter, we need to write one line of parser.add_argument(...), when handwriting configuration of each parameter, it will be very tedious such as the name needs to add --, and modify the default value, type and description of the time is very troublesome, finally will lead to very long code and inconvenient to maintain. 
 
@@ -377,7 +386,7 @@ I don't want to specify option over and over again when writing code, and write 
 
 So would it make the code look more structured and clearer if the parameter configuration could be written in the format of Python objects/JSON?
 
-同时，能不能直接将命令行参数当做Python 对象进行读写，深拷贝等操作，就如同没有配置过命令行参数一样？
+同时，能不能直接将命令行参数当做Python对象进行读写，深拷贝等操作，就如同没有配置过命令行参数一样？
 
 Also, is it possible to directly read and write command line arguments as if they were Python objects, or deep copy them, as if no command line arguments had been configured?
 
@@ -389,7 +398,22 @@ Most importantly, can you make the process of writing code faster, instead of ad
 
 In order to solve the above pain points, this tool has been developed.
 
-我的目标是让大家用更加简单的代码来写出和繁琐的argparse或click这类命令行解析包一样的效果，同时让配置看起来结构化简洁化，选择json是因为Python字典类型dict原生就是json格式，所以和Python代码格式保持一致，从而可以做到配置信息直接嵌入到Python代码文件中（任意位置），而不需要单独建立类似toml这样的单独的配置文件，同时，此库也可以在代码文件的任意位置写配置以读取命令行参数以及随时修改配置各字段值的功能等。
+我的目标是让大家用更加简单的写出和繁琐的argparse或click这类命令行解析包一样的效果的代码，同时让配置看起来结构化简洁化，选择json格式是因为Python字典类型dict原生就是json格式，所以可以做到和Python代码格式保持一致，从而使我们可以将配置信息直接嵌入到Python代码文件中（任意位置），而不需要建立类似toml这样单独的配置文件，同时，此库也可以在代码文件的任意位置写配置以读取命令行参数以及随时修改配置各字段值的功能等。
 
-My goal is to make it easier for us to write more concise codes that works as well as verbose command line parsing packages like Argparse or Click, while also making the configuration look structured and easy to maintain. Json was chosen because the Python dictionary type Dict is native in JSON format, so it is the same format as Python code. In this way, the configuration information can be directly embedded in the Python code file (anywhere), without the need to establish a separate configuration file such as TOML. At the same time, you can use the library to write the configuration at any position within the code file to read the command line parameters and modify the value of each field at any time.
+My goal is to make it easier for us to write more concise codes that works as the same as verbose command line parsing packages like Argparse or Click, while also making the configuration look structured and easy to maintain. Json was chosen because the Python dictionary type Dict is native in JSON format, so can make the same format as Python code. In this way, the configuration information can be directly embedded in the Python code file (anywhere), without the need to establish a separate configuration file such as TOML. At the same time, you can use the library to write the configuration at any position within the code file to read the command line parameters and modify the value of each field at any time.
 
+类似的工具还有：
+
+Similar tools including:
+
+| 名称           | 不足                                                                                                                                   |   |   |   |
+|----------------|----------------------------------------------------------------------------------------------------------------------------------------|---|---|---|
+| Fire           | 无法将参数传递给其它函数                                                                                                               |   |   |   |
+| hydra          | 需要设定额外的yaml文件且路径强制固定，同时无法进行代码完整性检查以及参数类型检查和强制转换，参数打印不够友好清晰。 |   |   |   |
+| ml_collections | 传递命令行参数时书写麻烦，同样没有代码完整性检查以及参数类型检查和强制转换，参数打印不够友好清晰。                           |   |   |   |
+
+| Name           | Disadvantage                                                                                                                           |   |   |   |
+|----------------|----------------------------------------------------------------------------------------------------------------------------------------|---|---|---|
+| Fire           | Cannot pass parameters to other functions.                                                                                             |   |   |   |
+| hydra          | Need additional yaml file with specifed path, also cannot perform integrity check and type conversion/check, not friendly for printing |   |   |   |
+| ml_collections | A little tideous to pass commandline parameters, and also without integrity check, not friendly for printing                           |   |   |   |
