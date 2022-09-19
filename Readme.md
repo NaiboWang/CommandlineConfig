@@ -345,9 +345,9 @@ print(args.index)
 
 With one more additional parameter, we need to write one line of parser.add_argument(...), when handwriting configuration of each parameter, it will be very tedious such as the name needs to add --, and modify the default value, type and description of the time is very troublesome, finally will lead to very long code and inconvenient to maintain. 
 
-就算用了更高级一点的Click，也需要不停的写options, 而且有几个options对应函数就要写几个输入参数与之匹配，写代码实在是繁琐，比如以下Click代码：
+就算用了更高级一点的Click，也需要不停的写option, 而且有几个option对应函数就要写几个输入参数与之匹配，写代码实在是繁琐，比如以下Click代码：
 
-Even if you use a more advanced library *click*, you still need to write options constantly, and you need to write the same amount of parameters at the input parameter field of the function to match all the options, writing code is really tedious, such as the following Click code:
+Even if you use a more advanced library *click*, you still need to write option constantly, and you need to write the same amount of parameters at the input parameter field of the function to match all the option, writing code is really tedious, such as the following Click code:
 
 ```python
 import click
