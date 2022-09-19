@@ -523,19 +523,19 @@ My goal is to make it easier for us to write more concise codes that works as th
 
 Similar tools including:
 
-| 名称           | 不足                                                                                                                                   |   |   |   |
-|----------------|----------------------------------------------------------------------------------------------------------------------------------------|---|---|---|
-| Fire           | 无法将参数传递给其它函数                                                                                                               |   |   |   |
-| hydra          | 需要设定额外的yaml文件且路径强制固定，同时无法进行代码完整性检查以及参数类型检查和强制转换，参数打印不够友好清晰。 |   |   |   |
-| ml_collections | 传递命令行参数时书写麻烦，同样没有代码完整性检查以及参数类型检查和强制转换，参数打印不够友好清晰。                           |   |   |   |
+| 名称           | 不足                                                                                                                                      |
+|----------------|----------------------------------------------------------------------------------------------------------------------------------------|
+| Fire           | 无法将参数传递给其它函数                                                                                                                  |
+| hydra          | 需要设定额外的yaml文件且路径强制固定，同时无法进行代码完整性检查以及参数类型检查和强制转换，参数打印不够友好清晰。    |
+| ml_collections | 传递命令行参数时书写麻烦，同样没有代码完整性检查以及参数类型检查和强制转换，参数打印不够友好清晰。                              |
 
-| Name           | Disadvantage                                                                                                                           |   |   |   |
-|----------------|----------------------------------------------------------------------------------------------------------------------------------------|---|---|---|
-| Fire           | Cannot pass parameters to other functions.                                                                                             |   |   |   |
-| hydra          | Need additional yaml file with specifed path, also cannot perform integrity check and type conversion/check, not friendly for printing |   |   |   |
-| ml_collections | A little tideous to pass commandline parameters, and also without integrity check, not friendly for printing                           |   |   |   |
+| Name           | Disadvantage                                                                                                                              |
+|----------------|----------------------------------------------------------------------------------------------------------------------------------------|
+| Fire           | Cannot pass parameters to other functions.                                                                                                |
+| hydra          | Need additional yaml file with specifed path, also cannot perform integrity check and type conversion/check, not friendly for printing    |
+| ml_collections | A little tideous to pass commandline parameters, and also without integrity check, not friendly for printing                              |
 
 ## 待做事项 TODO
 
-* 实现读写循环嵌套功能。
+* 实现多层循环嵌套功能。
 
