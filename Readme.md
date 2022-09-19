@@ -1,4 +1,4 @@
-# 请求Star Please Star
+# 请您Star Please Star
 
 如果你觉得此工具不错，请轻轻点击此页面右上角**Star**按钮增加项目曝光度，谢谢！
 
