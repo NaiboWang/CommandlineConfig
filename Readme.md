@@ -312,7 +312,7 @@ copy_config.index=15
 * 参数名称中如包含特殊字符如-+空格等python保留字符，则必须使用中括号的方式读写参数值，不能使用.号，如参数名称为*multi-information*，则只能通过config["multi-information"]的方式访问，不能通过config.multi-information访问，因为减号为python语言保留名称。
 * If the parameter name contains special characters such as -+ or space or other python reserved characters, you must use the middle bracket to read and write the parameter value instead of **.** E.g., if the parameter name is *multi-information*, it can only be accessed by *config["multi-information"]*, cannot do *config.multi-information*, because the minus sign - is a python language's reserved symbol.
 
-* 暂只支持一层嵌套对象，其他支持的参数类型为：int, float, string, bool和list。
+* 目前暂只支持一层嵌套对象，其他支持的参数类型为：int, float, string, bool和list。
 * Only one layer of nested objects is supported for now, other supported parameter types are: int, float, string, bool and list.
 
 * 命令行中传递的参数名称**必须提前在preset_config中定义，否则会报错**，如：
