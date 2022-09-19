@@ -277,6 +277,47 @@ if args.cuda:
 
 As we can see, the amount of code has been reduced and is more structured and neat.
 
+另外一个Click的例子：
+
+Another case with library click:
+
+```python
+import click
+
+@click.command()
+@click.option('--count', default=1, help='Number of greetings.')
+@click.option('--name', prompt='Your name',
+              help='The person to greet.')
+def hello(count, name):
+    """Simple program that greets NAME for a total of COUNT times."""
+    for x in range(count):
+        click.echo(f"Hello {name}!")
+
+if __name__ == '__main__':
+    hello()
+```
+
+可转换为下面的代码：
+
+Can be converted to the following code:
+
+```python
+from commandline_config import Config
+
+def hello(o):
+    """Simple program that greets NAME for a total of COUNT times."""
+    for x in range(o.count):
+        print(f"Hello {o.name}!")
+
+if __name__ == '__main__':
+    args = {
+      "count":1, # Number of greetings.
+      "name":"", # The person to greet.
+    }
+    options = Config(args)
+    hello(options)
+```
+
 ## Shattered thoughts 碎碎念
 
 以下描述了作者个人的开发原因以及此包的好处/便利性。
@@ -304,6 +345,34 @@ print(args.index)
 
 With one more additional parameter, we need to write one line of parser.add_argument(...), when handwriting configuration of each parameter, it will be very tedious such as the name needs to add --, and modify the default value, type and description of the time is very troublesome, finally will lead to very long code and inconvenient to maintain. 
 
+就算用了更高级一点的Click，也需要不停的写options, 而且有几个options对应函数就要写几个输入参数与之匹配，写代码实在是繁琐，比如以下Click代码：
+
+Even if you use a more advanced library *click*, you still need to write options constantly, and you need to write the same amount of parameters at the input parameter field of the function to match all the options, writing code is really tedious, such as the following Click code:
+
+```python
+import click
+
+from caesar_encryption import encrypt
+
+@click.command()
+@click.argument('text', nargs=-1)
+@click.option('--decrypt/--encrypt', '-d/-e')
+@click.option('--key', '-k', default=1)
+def caesar(text, decrypt, key):
+    text_string = ' '.join(text)
+    if decrypt:
+        key = -key
+    cyphertext = encrypt(text_string, key)
+    click.echo(cyphertext)
+
+if __name__ == '__main__':
+    caesar()
+```
+
+我并不想在写代码的时候反复指定option选项，并在函数名参数栏写一大堆对应参数，麻烦的很。
+
+I don't want to specify option over and over again when writing code, and write a lot of corresponding parameters in the function name parameter field, which is very troublesome.
+
 因此，如果可以在代码中通过Python对象/JSON的形式写参数配置，会不会就让代码看得更加结构化，更清晰呢？
 
 So would it make the code look more structured and clearer if the parameter configuration could be written in the format of Python objects/JSON?
@@ -319,4 +388,8 @@ Most importantly, can you make the process of writing code faster, instead of ad
 为了解决以上痛点，因此开发了此工具。
 
 In order to solve the above pain points, this tool has been developed.
+
+我的目标是让大家用更加简单的代码来写出和繁琐的argparse或click这类命令行解析包一样的效果，同时让配置看起来结构化简洁化，选择json是因为Python字典类型dict原生就是json格式，所以和Python代码格式保持一致，从而可以做到配置信息直接嵌入到Python代码文件中（任意位置），而不需要单独建立类似toml这样的单独的配置文件，同时，此库也可以在代码文件的任意位置写配置以读取命令行参数以及随时修改配置各字段值的功能等。
+
+My goal is to make it easier for us to write more concise codes that works as well as verbose command line parsing packages like Argparse or Click, while also making the configuration look structured and easy to maintain. Json was chosen because the Python dictionary type Dict is native in JSON format, so it is the same format as Python code. In this way, the configuration information can be directly embedded in the Python code file (anywhere), without the need to establish a separate configuration file such as TOML. At the same time, you can use the library to write the configuration at any position within the code file to read the command line parameters and modify the value of each field at any time.
 
