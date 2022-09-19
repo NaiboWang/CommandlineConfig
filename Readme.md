@@ -1,3 +1,9 @@
+# 友情提示 Friendly Tip
+
+如果你觉得此工具不错，请轻轻点击此页面右上角**Star**按钮增加项目曝光度，谢谢！
+
+If you think this tool is good, please gently click the **Star** button in the upper right corner at this page to increase the project exposure, thank you!
+
 # 简洁命令行配置工具 Easy-to-use Commandline Configuration Tool
 
 一个供用户以Python Dict或JSON格式编写（科研中实验）配置的库，同时可以从命令行中读取参数。
