@@ -18,6 +18,12 @@ Github Address: https://github.com/NaiboWang/CommandlineConfig
 
 ## 使用方式 Usage
 
+### 请提出issue Please issue
+
+使用过程中遇到任何问题，请在此项目的github页面中提出issue，我将在第一时间解决遇到的bug和问题。
+
+If you encounter any problems during using with this tool, please raise an issue in the github page of this project, I will solve the bugs and problems encountered at the first time.
+
 ### 安装方法 Installation
 
 两种方法安装此库：
@@ -71,12 +77,12 @@ There are two ways to install this library:
 
   That is, the initial configuration of the program is generated. Each key defined in preset_config dict is the parameter name and each value is the initial value of the parameter, and at the same time, the initial value type of the parameter is automatically detected according to the type of the set value.
 
-  如上方配置中包含五个参数：index， dataset， batch， normalization和 multi-information， 其中参数**index**的类型会自动检测为**int**，默认值为**1**，描述为“Index of party”。
+  如上方配置中包含六个参数：index， dataset， batch， normalization, multi_information和dbinfo， 其中参数**index**的类型会自动检测为**int**，默认值为**1**，描述为“Index of party”。
 
-  The above configuration contains five parameters: index, dataset, batch, normalization and multi-information, where the type of the parameter **index** is automatically detected as **int**, the default value is **1** and the description is "Index of party".
+  The above configuration contains six parameters: *index, dataset, batch, normalization, multi_information* and *dbinfo*, where the type of the parameter **index** is automatically detected as **int**, the default value is **1** and the description is "Index of party".
 
 
-  同理，第二至五个参数的的类型和默认值分别为string:"mnist"； float:0.01； bool:True； list:[1,0.5,'test',"TEST"]
+  同理，第二至五个参数的的类型和默认值分别为string:"mnist"； float:0.01； bool:True； list:[1,0.5,'test',"TEST"]。
 
   Similarly, The type and default value of the second to fifth parameter are string: "mnist"; float:0.01; bool:True; list:[1,0.5,'test', "TEST"].
 
@@ -139,7 +145,10 @@ There are two ways to install this library:
 
   这里会同时以表格和字典形式打印所有参数的信息，如想要改变打印方式，可通过`config_with_name.set_print_style(style='')`的方式修改，style可取的值有：`both`，`table`，`json`分别表示同时打印，只打印表格，只打印json字典。
 
+  Here the information of all parameters will be printed in table and dictionary format at the same time. If you want to change the printing style, you can modify it by `config_with_name.set_print_style(style='')`. The values that can be taken for *style* are: `both`, `table`, `json` which means print both table and json at the same time, print only table, and json dictionary only.
+
   如：
+  E.g.:
 
   ```python
     # 只打印json
@@ -198,12 +207,12 @@ There are two ways to install this library:
 
 可通过三种方式写入配置参数值。
 
-Configuration parameter values can be written in two ways.
+Configuration parameter values can be written in three ways.
 
 * 1. 接收命令行参数，只需要在命令行通过--index 1传递即可修改index的值为1，同时，不同类型的参数传递的注意事项为：
-* 2. To receive command line arguments, simply pass --index 1 on the command line to modify the value of *index* to 1. Also, the considerations for passing values to different types of arguments are：
+* 1. To receive command line arguments, simply pass --index 1 on the command line to modify the value of *index* to 1. Also, the considerations for passing values to different types of arguments are：
   
-  * 传递bool类型时，可使用0或False来表示False，使用1或True或参数后面不带任何值来表示True：--normalization 1或--normalization True或--normalization都可以将配置中normalization的参数值设定为True.
+  * 传递bool类型时，可使用0或False来表示False，使用1或True或参数后面不带任何值来表示True：即--normalization 1或--normalization True或--normalization都可以将配置中normalization的参数值设定为True.
   * When passing bool type, you can use *0* or *False* for **False**, *1* or *True* or *no value after the parameter* for **True**: --normalization 1 or --normalization True or --normalization all can set the value of parameter *normalization* in the configuration to **True**.
   * 传递list类型时，可传递空数组及多维数组。
   * When passing list type, empty array and multi-dimensional arrays can be passed.
@@ -217,7 +226,7 @@ Configuration parameter values can be written in two ways.
   ```
 
 * 2. 直接在代码中使用`config.index = 2`来修改参数index的值为2，同样，list类型参数可以赋值为为空或多维数组。对于嵌套对象，可使用`config.dbinfo.save_password=True`的方式修改dbinfo中save_password参数的值为True。
-* 2. Use `config.index = 2` directly in the code to change the value of the parameter index to 2. Again, list type parameters can be assigned as empty or multidimensional arrays. For nested objects, you can use `config.dbinfo.save_password=True` to modify the value of the save_password parameter in dbinfo to True.
+* 2. Use `config.index = 2` directly in the code to change the value of the parameter index to 2. Again, list type parameters can be assigned as empty or multidimensional arrays. For nested objects, you can use `config.dbinfo.save_password=True` to modify the value of the save_password parameter in dbinfo to `True`.
 
 * 3. 1和2两种方式会触发类型检查，即如果赋的值类型和预定义字典preset_config中默认值的类型不匹配时程序将报错，因此，如果不想进行强制类型检查，可通过`config["index"] = "sdf"`强行修改参数index的值为字符串sdf（不推荐，会造成意想不到的影响）。
 * 3. Way 1 and 2 will trigger type checking, that is, if the type of the assigned value and the type of the default value in the predefined dict *preset_config* does not match, the program will report an error, therefore, if you do not want to force type checking, you can use `config["index"] = "sdf"` to force the value of the parameter index to the string *sdf* (not recommended, it will cause unexpected impact).
@@ -246,6 +255,7 @@ print(config.dbinfo.certificate_info[2][0][0])
 ```
 
 对于嵌套对象中的参数，共有四种读取方式，均可读取到参数的值：
+
 For parameters in nested objects, there are four ways to read the values of the parameters, all of which can be read successfully:
 
 ```
@@ -294,8 +304,8 @@ copy_config.index=15
 
   If the parameter value specified on the command line parameters can not be forcedly converted to specific type, it will report an error, such as if the command line specified --index sdf, as sdf with orignal format of string can not be converted to int type, so it will report an error.
 
-* 命令行参数设置为输入list类型时，如果list中元素是字符串，则必须在每个单/双引号前加入反斜线\以正确解析，否则参数值会被视作int或float类型。如果命令行中有空格会被自动合并（但命令行环境不能是zsh，如果是zsh环境则必须去除list内部所有的空格，bash和sh不存在此问题，即在zsh环境下，--a [15,\\'12\\']的15和\\'12\\'之间不得有空格）。
-* When the command line argument is set to the input list type, if the element in the list is a string, you must use add a backslash \ before each single/double quote to parse it correctly, otherwise the argument value will be treated as an int or float type. If there are spaces in the command line they will be merged automatically (but the command line environment can not be *zsh*, if it is zsh environment then must remove all the spaces inside the list, *bash* and *sh* does not have this problem, that is, in the zsh environment, you cannot add any space(s) between 15 and \\\'12\\\' in --a [15,\\'12\\']).
+* 命令行参数设置为输入list类型时，如果list中元素是字符串，则必须在每个单/双引号前加入反斜线\以正确解析，否则参数值会被视作int或float类型。如果命令行中有空格会被自动合并（但命令行环境不能是zsh，如果是zsh环境则必须去除list内部所有的空格，bash和sh不存在此问题，即在zsh环境下，`--a [15,\\'12\\']`的15和\\'12\\'之间不得有空格）。
+* When the command line argument is set to the input list type, if the element in the list is a string, you must use add a backslash \ before each single/double quote to parse it correctly, otherwise the argument value will be treated as an int or float type. If there are spaces in the command line they will be merged automatically (but the command line environment can not be *zsh*, if it is zsh environment then must remove all the spaces inside the list, *bash* and *sh* does not have this problem, that is, in the zsh environment, you cannot add any space(s) between 15 and \\\'12\\\' in `--a [15,\\'12\\']`).
 
   如参数可设置为： 
 
@@ -523,19 +533,19 @@ My goal is to make it easier for us to write more concise codes that works as th
 
 Similar tools including:
 
-| 名称           | 不足                                                                                                                                      |
-|----------------|----------------------------------------------------------------------------------------------------------------------------------------|
-| Fire           | 无法将参数传递给其它函数                                                                                                                  |
-| hydra          | 需要设定额外的yaml文件且路径强制固定，同时无法进行代码完整性检查以及参数类型检查和强制转换，参数打印不够友好清晰。    |
-| ml_collections | 传递命令行参数时书写麻烦，同样没有代码完整性检查以及参数类型检查和强制转换，参数打印不够友好清晰。                              |
+| 名称         | 好处  | 不足                                                                                                                                      |
+|----------------|----------------|----------------------------------------------------------------------------------------------------------------------------------------|
+| Fire           | 函数参数直接转换为命令行参数 | 无法将参数传递给其它函数，无法嵌套输入                                                                                                                  |
+| hydra          | 读取写入yaml方便 | 需要设定额外的yaml文件且路径强制固定，同时无法进行代码完整性检查以及参数类型检查和强制转换，参数打印不够友好清晰。    |
+| ml_collections | 功能类似此工具且可配置项更多 | 传递命令行参数时书写麻烦，同样没有代码完整性检查以及参数类型检查和强制转换，参数打印不够友好清晰。                              |
 
-| Name           | Disadvantage                                                                                                                              |
-|----------------|----------------------------------------------------------------------------------------------------------------------------------------|
-| Fire           | Cannot pass parameters to other functions.                                                                                                |
-| hydra          | Need additional yaml file with specifed path, also cannot perform integrity check and type conversion/check, not friendly for printing    |
-| ml_collections | A little tideous to pass commandline parameters, and also without integrity check, not friendly for printing                              |
+| Name           | Advantage| Disadvantage                                                                                                                              |
+|----------------|----------------|----------------------------------------------------------------------------------------------------------------------------------------|
+| Fire           | Can direct do conversion of function parameters to command line parameters | Cannot pass parameters to other functions.                                                                                                |
+| hydra          | Easy to read and write to yaml | Need additional yaml file with specifed path, also cannot perform integrity check and type conversion/check, not friendly for printing    |
+| ml_collections | Similar functionality to this tool with more configurable items | A little tideous to pass commandline parameters, and also without integrity check, not friendly for printing                              |
 
 ## 待做事项 TODO
 
 * 实现多层循环嵌套功能。
-
+* Implement multi-layer loop nesting function.
