@@ -29,8 +29,16 @@ Github Address: https://github.com/NaiboWang/CommandlineConfig
       - [读取方式 Reading method](#读取方式-reading-method)
       - [传递配置给函数 Pass configuration to functions](#传递配置给函数-pass-configuration-to-functions)
       - [拷贝配置 Copy configuration](#拷贝配置-copy-configuration)
+      - [配置参数存储至本地或数据库  Store configuration parameters to local file or a database](#配置参数存储至本地或数据库--store-configuration-parameters-to-local-file-or-a-database)
   - [注意事项 Things need attention](#注意事项-things-need-attention)
-    - [完整转换示例 Full conversion example](#完整转换示例-full-conversion-example)
+    - [与Argparse冲突 Conflict with Argparse](#与argparse冲突-conflict-with-argparse)
+    - [输入值会自动强制转换为默认值对应类型 Input value forced conversion](#输入值会自动强制转换为默认值对应类型-input-value-forced-conversion)
+    - [list参数赋值时字符串元素引号前需加反斜线 The list parameter needs to be assigned with a backslash before the string element quotes](#list参数赋值时字符串元素引号前需加反斜线-the-list-parameter-needs-to-be-assigned-with-a-backslash-before-the-string-element-quotes)
+    - [参数命名规范 Parameter naming convention](#参数命名规范-parameter-naming-convention)
+    - [嵌套对象目前只支持一层 Nested objects currently support only one layer](#嵌套对象目前只支持一层-nested-objects-currently-support-only-one-layer)
+    - [参数完整性检查，所有要修改的参数必须预定义 Parameter integrity check, all parameters to be modified must be predefined](#参数完整性检查所有要修改的参数必须预定义-parameter-integrity-check-all-parameters-to-be-modified-must-be-predefined)
+    - [ZSH环境特殊配置 Special configurations in ZSH environment](#zsh环境特殊配置-special-configurations-in-zsh-environment)
+  - [完整转换示例 Full conversion example](#完整转换示例-full-conversion-example)
   - [碎碎念 Shattered thoughts](#碎碎念-shattered-thoughts)
   - [待开发 TODO](#待开发-todo)
 
@@ -55,6 +63,14 @@ There are two ways to install this library:
 * 1. Install via pip:
   ```shell
     pip install commandline_config
+  ```
+  
+  已安装的可通过以下命令升级：
+  
+  If already installed, you can upgrade it by the following command:
+
+  ```shell
+    pip install commandline_config --upgrade
   ```
 
 * 2. 直接导入github项目中/commandline_config文件夹下的commandline_config.py文件到自己的项目目录中即可，需要安装依赖包prettytable:
@@ -148,7 +164,6 @@ There are two ways to install this library:
   | multi_information |  list | [1, 0.5, 'test', 'TEST'] |
   |       dbinfo      |  dict | See sub table below      |
   +-------------------+-------+--------------------------+
-  {'index': 1, 'dataset': 'mnist', 'lr': 0.01, 'normalization': True, 'multi_information': [1, 0.5, 'test', 'TEST'], 'dbinfo': 'See below'}
 
   Configurations of dict dbinfo:
   +---------------------+-------+-----------------+
@@ -160,10 +175,9 @@ There are two ways to install this library:
   |    save_password    |  bool | False           |
   |   certificate_info  |  list | ['1', 2, [3.5]] |
   +---------------------+-------+-----------------+
-  {'username': 'nus', 'password': 123456, 'retry_interval_time': 5.5, 'save_password': False, 'certificate_info': ['1', 2, [3.5]]}
   ```
 
-  这里会同时以表格和字典形式打印所有参数的信息，如想要改变打印方式，可通过`config_with_name.set_print_style(style='')`的方式修改，style可取的值有：`both`，`table`，`json`分别表示同时打印，只打印表格，只打印json字典。
+  这里默认会以表格形式打印所有参数的信息，如想要改变打印方式，可通过`config_with_name.set_print_style(style='')`的方式修改，style可取的值有：`both`，`table`，`json`分别表示同时打印表格和json，只打印表格，只打印json字典。
 
   Here the information of all parameters will be printed in table and dictionary format at the same time. If you want to change the printing style, you can modify it by `config_with_name.set_print_style(style='')`. The values that can be taken for *style* are: `both`, `table`, `json` which means print both table and json at the same time, print only table, and json dictionary only.
 
@@ -177,8 +191,8 @@ There are two ways to install this library:
     config_with_name.set_print_style('json')
     print(config_with_name)
     print("----------")
-    # 只打印表格
-    # Only print table
+    # 同时打印表格和json
+    # Print table and json at the same time
     config_with_name.set_print_style('table')
     print(config_with_name)
   ```
@@ -197,6 +211,7 @@ There are two ways to install this library:
 
   ----------
 
+
   Configurations of Federated Learning Experiments:
   +-------------------+-------+--------------------------+
   |        Key        |  Type | Value                    |
@@ -208,6 +223,7 @@ There are two ways to install this library:
   | multi_information |  list | [1, 0.5, 'test', 'TEST'] |
   |       dbinfo      |  dict | See sub table below      |
   +-------------------+-------+--------------------------+
+  {'index': 1, 'dataset': 'mnist', 'lr': 0.01, 'normalization': True, 'multi_information': [1, 0.5, 'test', 'TEST'], 'dbinfo': 'See below'}
 
   Configurations of dict dbinfo:
   +---------------------+-------+-----------------+
@@ -219,6 +235,7 @@ There are two ways to install this library:
   |    save_password    |  bool | False           |
   |   certificate_info  |  list | ['1', 2, [3.5]] |
   +---------------------+-------+-----------------+
+  {'username': 'nus', 'password': 123456, 'retry_interval_time': 5.5, 'save_password': False, 'certificate_info': ['1', 2, [3.5]]}
   ```
 
 
@@ -313,17 +330,68 @@ copy_config = deepcopy(config)
 copy_config.index=15 
 ```
 
+#### 配置参数存储至本地或数据库  Store configuration parameters to local file or a database
+
+整个参数配置可以json方式存储到本地文件中，或者上传到如mongodb的远程服务器，只需要通过`info = config.get_config()`命令得到参数对应的json序列，再用json库进行序列化即可。
+
+The whole configuration parameters can be stored in a local file in JSON mode or uploaded to a remote server such as mongodb. You only need to get the corresponding JSON sequence of parameters through the `info = config.get_config()` command and then serialized with `json` library.
+
+例如，将`config_with_name`配置存储到本地文件：
+
+For example, to store the `config_with_name` configuration to a local file:
+
+```python
+with open("configuration.json", "w") as f:
+    configuration = config_with_name.get_config()
+    # 可直接打印json配置
+    # Can print configuration directly
+    print(configuration) 
+    
+    # 存储为json文件
+    # Store as json file
+    json.dump(configuration, f)
+```
+
+即可将配置存储到本地`configuration.json`文件，文件内容为：
+
+Then we successfully save the configuration to the local `configuration.json` file. The file content is as follows:
+
+```json
+{
+  "index": 5,
+  "dataset": "sdf",
+  "lr": 15.5,
+  "normalization": true,
+  "msg_config": { "test": "ttt" },
+  "multi_information": [2, "sd", "sdfdsf"],
+  "dbinfo": {
+    "username": "test",
+    "password": 1,
+    "retry_interval_time": 22.0,
+    "save_password": false,
+    "certificate_info": [1, [], [[2]]]
+  }
+}
+
+```
+
+
+
 ## 注意事项 Things need attention
 
+### 与Argparse冲突 Conflict with Argparse
 * 此包无法和argparse包同时读取命令行参数，因此使用此包请不要同时使用args = parser.parse_args()来读取命令行参数。
 * This library cannot read command line arguments at the same time with the argparse library, so please do not use args = parser.parse_args() to read command line arguments while using this library.
 
+### 输入值会自动强制转换为默认值对应类型 Input value forced conversion
 * 参数的类型将自动检测为preset_config中设定的初始值类型，同时命令行参数的值将被强制转换为对应类型值，如上面的preset_config中的index的默认值为1，则参数index的类型为int，初始值为1，此时如在命令行中指定--index 15.5则将会自动将参数index赋值为15，即自动将15.5强制转换为int类型。
 * The type of the parameter will be automatically detected as the same type of the initial value set in preset_config, and the value of the command line parameter will be forced converted to the corresponding type value, such as the default value of index in the above preset_config dict is 1, then the type of the parameter index is **int** with the initial value of 1. If you specify --index 15.5 on the command line, the parameter index will be automatically assigned to value 15, that is, 15.5 will be automatically forced converted to int type.
 
   无法转换的命令行参数将会报错，如命令行指定--index sdf，由于sdf字符串无法强制转换为int类型，因此会报错。
 
   If the parameter value specified on the command line parameters can not be forcedly converted to specific type, it will report an error, such as if the command line specified --index sdf, as sdf with orignal format of string can not be converted to int type, so it will report an error.
+
+### list参数赋值时字符串元素引号前需加反斜线 The list parameter needs to be assigned with a backslash before the string element quotes 
 
 * 命令行参数设置为输入list类型时，如果list中元素是字符串，则必须在每个单/双引号前加入反斜线\以正确解析，否则参数值会被视作int或float类型。如果命令行中有空格会被自动合并（但命令行环境不能是zsh，如果是zsh环境则必须去除list内部所有的空格，bash和sh不存在此问题，即在zsh环境下，`--a [15,\\'12\\']`的15和\\'12\\'之间不得有空格）。
 * When the command line argument is set to the input list type, if the element in the list is a string, you must use add a backslash \ before each single/double quote to parse it correctly, otherwise the argument value will be treated as an int or float type. If there are spaces in the command line they will be merged automatically (but the command line environment can not be *zsh*, if it is zsh environment then must remove all the spaces inside the list, *bash* and *sh* does not have this problem, that is, in the zsh environment, you cannot add any space(s) between 15 and \\\'12\\\' in `--a [15,\\'12\\']`).
@@ -340,12 +408,16 @@ copy_config.index=15
 
   That can correctly resolve the array parameter whose value is a list, and the content of [1,2.3,'sdf', "qwe"], that is, a list containing int, float, string type of data simultaneously.
 
-* 参数名称中如包含特殊字符如-+空格等python保留字符，则必须使用中括号的方式读写参数值，不能使用.号，如参数名称为*multi-information*，则只能通过config["multi-information"]的方式访问，不能通过config.multi-information访问，因为减号为python语言保留名称。
+### 参数命名规范 Parameter naming convention
+
+* 参数名称中如包含特殊字符如-+.空格等python保留字符，则必须使用中括号的方式读写参数值，不能使用.号，如参数名称为*multi-information*，则只能通过config["multi-information"]的方式访问，不能通过config.multi-information访问，因为减号为python语言保留名称。
 * If the parameter name contains special characters such as -+ or space or other python reserved characters, you must use the middle bracket to read and write the parameter value instead of **.** E.g., if the parameter name is *multi-information*, it can only be accessed by *config["multi-information"]*, cannot do *config.multi-information*, because the minus sign - is a python language's reserved symbol.
 
+### 嵌套对象目前只支持一层 Nested objects currently support only one layer
 * 目前暂只支持一层嵌套对象，其他支持的参数类型为：int, float, string, bool和list。
 * Only one layer of nested objects is supported for now, other supported parameter types are: int, float, string, bool and list.
 
+### 参数完整性检查，所有要修改的参数必须预定义 Parameter integrity check, all parameters to be modified must be predefined
 * 命令行中传递的参数名称**必须提前在preset_config中定义，否则会报错**，如：
 * The name of the parameter passed on the command line **must be defined in preset_config in advance, otherwise an error will be reported**, e.g.
 
@@ -357,11 +429,12 @@ copy_config.index=15
 
   Since the parameter name *arg1* is not defined in preset_config dict, an error is reported indicating that the arg1 parameter is not defined. This function is set to perform parameter integrity checking to avoid entering incorrect parameter names through the command line.
 
+### ZSH环境特殊配置 Special configurations in ZSH environment
 * 在ZSH Shell环境下传递list参数时，如果出现`zsh: no matches found`的错误，则需要在`~/.zshrc`文件的最后加入一行`setopt no_nomatch`，保存后在命令行运行`source ~/.zshrc`刷新zsh即可。
 * If `zsh: no matches found` occurs when passing list arguments in the ZSH Shell environment, please add a line `setopt no_nomatch` at the end of the `~/.zshrc` file, after save it then run `source ~/.zshrc` on the command line to refresh ZSH, then the problem will be solved.
 
 
-### 完整转换示例 Full conversion example
+## 完整转换示例 Full conversion example
 
 下面将给出一个例子来证明此工具相比于argparse工具的便利性：
 

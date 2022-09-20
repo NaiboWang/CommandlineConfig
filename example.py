@@ -1,10 +1,11 @@
+import json
 from commandline_config.commandline_config import Config
 from copy import deepcopy
 
 # preset_config = {
 #     "index": 1, # Index of party
 #     "dataset": "mnist",
-#     'lr': 0.01, # learning rate 
+#     'lr': 0.01, # learning rate
 #     'normalization': True,
 #     "multi_information":[1,0.5,'test',"TEST"],
 #     "nested":{
@@ -41,36 +42,36 @@ from copy import deepcopy
 # print(c)
 
 preset_config = {
-    "index": 1, # Index of party
+    "index": 1,  # Index of party
     "dataset": "mnist",
-    'lr': 0.01, # learning rate 
+    'lr': 0.01,  # learning rate
     'normalization': True,
-    'msg_config':{
-        "test":"ttt",
-    },
-    "multi_information":[1,0.5,'test',"TEST"], # list
-    "dbinfo":{
-        "username":"nus",
-        "password":123456,
-        "retry_interval_time":5.5,
-        "save_password":False,
-        "certificate_info":["1",2,[3.5]] 
+    # 'msg_config': {
+    #     "test": "ttt",
+    # },
+    "multi_information": [1, 0.5, 'test', "TEST"],  # list
+    "dbinfo": {
+        "username": "nus",
+        "password": 123456,
+        "retry_interval_time": 5.5,
+        "save_password": False,
+        "certificate_info": ["1", 2, [3.5]]
     }
-    }
+}
 config_with_name = Config(preset_config, name="Federated Learning Experiments")
 
 config_with_name.index = "5.5"
 config_with_name.dataset = "[]"
 config_with_name.lr = "15.5"
 config_with_name.normalization = True
-config_with_name.multi_information = [2,'sd','sdfdsf']
+config_with_name.multi_information = [2, 'sd', 'sdfdsf']
 config_with_name["dataset"] = "sdf"
 config_with_name.dbinfo.username = "test"
 config_with_name.dbinfo.password = "1"
 # config_with_name.sdf = 1
 config_with_name.dbinfo.retry_interval_time = "22"
 config_with_name.dbinfo.save_password = False
-config_with_name.dbinfo.certificate_info = [1,[],[[2]]]
+config_with_name.dbinfo.certificate_info = [1, [], [[2]]]
 
 print(config_with_name.dbinfo.certificate_info[2][0][0])
 
@@ -89,3 +90,8 @@ print(config_with_name)
 # copy_config = deepcopy(config_with_name)
 # copy_config.dbinfo.password=456456
 # print(copy_config, config_with_name)
+print(config_with_name.get_config())
+with open("configuration.json", "w") as f:
+    configuration = config_with_name.get_config()
+    print(configuration)
+    json.dump(configuration, f)

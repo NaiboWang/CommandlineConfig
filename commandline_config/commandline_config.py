@@ -2,6 +2,7 @@ from copy import deepcopy
 import sys
 from prettytable import PrettyTable
 
+
 def check_type(v):
     if isinstance(v, bool):
         return "bool"
@@ -19,6 +20,8 @@ def check_type(v):
         return "str"
 
 # 配置类
+
+
 class Config(dict):
     """
     Makes a dictionary behave like an object,with attribute-style access.
@@ -41,19 +44,20 @@ class Config(dict):
 
     """
 
-    def __init__(self, preset_config, name="", read_command_line = True):
-        self.__setattr__("preset_config",preset_config,True)
+    def __init__(self, preset_config, name="", read_command_line=True, print_style='table'):
+        self.__setattr__("preset_config", preset_config, True)
         # self.preset_config = preset_config
         for c in self.preset_config:
-            if c == "preset_config": # Prevent Loop 防止套娃
+            if c == "preset_config":  # Prevent Loop 防止套娃
                 continue
             type = check_type(self.preset_config[c])
             if type == "dict":
-                self[c] = Config(self.preset_config[c], name="dict "+c, read_command_line=False)
+                self[c] = Config(self.preset_config[c],
+                                 name="dict "+c, read_command_line=False)
             else:
                 self[c] = self.preset_config[c]
-        self.__setattr__("config_name",name,True)
-        self.__setattr__("print_style","both",True)
+        self.__setattr__("config_name", name, True)
+        self.__setattr__("print_style", print_style, True)
         if read_command_line:
             self.set_command_line(sys.argv[1:])
 
@@ -72,7 +76,7 @@ class Config(dict):
                     value.append(lines[j])
                 value = " ".join(value)
                 # print("origin key-value:", key, value, check_type(value))
-                if key.find(".")>=0:
+                if key.find(".") >= 0:
                     main_key = key.split(".")[0]
                     sub_key = key.split(".")[1]
                     # print("----------", main_key, sub_key, value)
@@ -94,30 +98,34 @@ class Config(dict):
                     variable = v
                 elif type == "float" or type == "int":  # 如果是int或者float，转换为相应类型
                     variable = eval(type + "(" + v + ")")
-                elif type =="bool":
+                elif type == "bool":
                     if len(v) == 0:
                         variable = True
                     else:
                         variable = eval(type + "(" + v + ")")
                 elif type == "list":
                     # print(v)
-                    if v.find("[")>=0:
-                        if v.find('"') >=0:
-                            v = v.replace('"',"'")
+                    if v.find("[") >= 0:
+                        if v.find('"') >= 0:
+                            v = v.replace('"', "'")
                         variable = eval('eval("%s")' % v)
                     else:
-                        print("\033[1;31mCannot convert %s to type %s, make sure you have input a list start with [ and end with ].\n\033[0m" % (str(v), type))
+                        print("\033[1;31mCannot convert %s to type %s, make sure you have input a list start with [ and end with ].\n\033[0m" % (
+                            str(v), type))
                 elif type == "dict":
                     print("\033[1;31mCannot directly parse the whole dict, please use . to spefic the value for the child elements of the dict. \nSuch as, use --nest.a 1 to set the value of 'a' inside dict 'nest' to 1.\n\033[0m")
                 else:
                     variable = eval('eval("%s")' % v)
             else:
-                print("\033[1;31mThe key '%s' is not exist in your preset configuration dict, please check if you input the correct name.\n\033[0m" % key)
+                print(
+                    "\033[1;31mThe key '%s' is not exist in your preset configuration dict, please check if you input the correct name.\n\033[0m" % key)
         except:
             if type == "list":
-                raise AttributeError("Cannot convert %s to type %s, if your command line value have single/double quote to input strings, please ensure you have an backslash \ before every quote symbol. \nSuch as: --array [1,2.5,\\'msg\\']" % (str(v), type))
+                raise AttributeError(
+                    "Cannot convert %s to type %s, if your command line value have single/double quote to input strings, please ensure you have an backslash \ before every quote symbol. \nSuch as: --array [1,2.5,\\'msg\\']" % (str(v), type))
             else:
-                raise AttributeError("Cannot convert %s to type %s" % (str(v), type))
+                raise AttributeError(
+                    "Cannot convert %s to type %s" % (str(v), type))
         # print(variable, check_type(variable))
         # if type == "list" or type == "dict" or type == "tuple":
         #     variable = eval("eval(%s)"%v)
@@ -127,14 +135,13 @@ class Config(dict):
         return variable
 
     def set_print_style(self, style="both"):
-        self.__setattr__("print_style",style,True)
+        self.__setattr__("print_style", style, True)
         for c in self.preset_config:
-            if c == "preset_config": # Prevent Loop 防止套娃
+            if c == "preset_config":  # Prevent Loop 防止套娃
                 continue
             type = check_type(self.preset_config[c])
             if type == "dict":
                 self[c].set_print_style(style)
-
 
     def __str__(self):
         if self.config_name == "":
@@ -149,10 +156,12 @@ class Config(dict):
             type = check_type(self[key])
             if type != "dict":
                 output_json[key] = self[key]
-                output.add_row([key, str(check_type(self.preset_config[key])), str(self[key])])
+                output.add_row(
+                    [key, str(check_type(self.preset_config[key])), str(self[key])])
             else:
                 output_json[key] = "See below"
-                output.add_row([key, str(check_type(self.preset_config[key])), "See sub table below"])
+                output.add_row(
+                    [key, str(check_type(self.preset_config[key])), "See sub table below"])
         if self.print_style == "both" or self.print_style == "table":
             print(output)
 
@@ -169,9 +178,13 @@ class Config(dict):
     def get_config(self):
         output = {}
         for key in self.preset_config:
-            if key == "_id": # 防止mongodb的ObjectID键冲突
+            if key == "_id":  # 防止mongodb的ObjectID键冲突
                 continue
-            output[key] = self[key]
+            type = check_type(self[key])
+            if type == "dict":
+                output[key] = self[key].get_config()
+            else:
+                output[key] = self[key]
         return output
 
     def __getattr__(self, name):
@@ -180,7 +193,7 @@ class Config(dict):
         except:
             raise AttributeError(name)
 
-    def __setattr__(self, name, value, no_check_type = False):
+    def __setattr__(self, name, value, no_check_type=False):
         if name == "preset_config" or name == "config_name" or name == "print_style" or name in self.preset_config:
             if no_check_type:
                 self[name] = value
@@ -188,4 +201,5 @@ class Config(dict):
                 v = self.convert_type(value, name)
                 self[name] = v
         else:
-            raise AttributeError("Can not set value because the key '%s' is not in preset_config!" % name)
+            raise AttributeError(
+                "Can not set value because the key '%s' is not in preset_config!" % name)
