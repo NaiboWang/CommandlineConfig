@@ -17,7 +17,6 @@ Github网址：https://github.com/NaiboWang/CommandlineConfig
 Github Address: https://github.com/NaiboWang/CommandlineConfig
 
 ##  目录 Catalogue
-
 - [请您Star Please Star](#请您star-please-star)
 - [简洁命令行配置工具 Easy-to-use Commandline Configuration Tool](#简洁命令行配置工具-easy-to-use-commandline-configuration-tool)
   - [目录 Catalogue](#目录-catalogue)
@@ -33,7 +32,7 @@ Github Address: https://github.com/NaiboWang/CommandlineConfig
   - [注意事项 Things need attention](#注意事项-things-need-attention)
     - [完整转换示例 Full conversion example](#完整转换示例-full-conversion-example)
   - [碎碎念 Shattered thoughts](#碎碎念-shattered-thoughts)
-  - [待做事项 TODO](#待做事项-todo)
+  - [待开发 TODO](#待开发-todo)
 
 
 
@@ -567,7 +566,7 @@ Similar tools including:
 | hydra          | Easy to read and write to yaml | Need additional yaml file with specifed path, also cannot perform integrity check and type conversion/check, not friendly for printing    |
 | ml_collections | Similar functionality to this tool with more configurable items | A little tideous to pass commandline parameters, and also without integrity check, not friendly for printing                              |
 
-## 待做事项 TODO
+## 待开发 TODO
 
 * 实现多层循环嵌套功能。
 * Implement multi-layer loop nesting function.
