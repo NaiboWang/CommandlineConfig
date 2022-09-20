@@ -45,6 +45,9 @@ preset_config = {
     "dataset": "mnist",
     'lr': 0.01, # learning rate 
     'normalization': True,
+    'msg_config':{
+        "test":"ttt",
+    },
     "multi_information":[1,0.5,'test',"TEST"], # list
     "dbinfo":{
         "username":"nus",

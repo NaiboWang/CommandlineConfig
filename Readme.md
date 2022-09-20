@@ -16,6 +16,27 @@ Github网址：https://github.com/NaiboWang/CommandlineConfig
 
 Github Address: https://github.com/NaiboWang/CommandlineConfig
 
+##  目录 Catalogue
+
+- [请您Star Please Star](#请您star-please-star)
+- [简洁命令行配置工具 Easy-to-use Commandline Configuration Tool](#简洁命令行配置工具-easy-to-use-commandline-configuration-tool)
+  - [目录 Catalogue](#目录-catalogue)
+  - [使用方式 Usage](#使用方式-usage)
+    - [请提出issue Please issue](#请提出issue-please-issue)
+    - [安装方法 Installation](#安装方法-installation)
+    - [配置方式 Configuration Way](#配置方式-configuration-way)
+    - [配置参数读写方式 Configuration parameters read and write method](#配置参数读写方式-configuration-parameters-read-and-write-method)
+      - [写入方式 Write method](#写入方式-write-method)
+      - [读取方式 Reading method](#读取方式-reading-method)
+      - [传递配置给函数 Pass configuration to functions](#传递配置给函数-pass-configuration-to-functions)
+      - [拷贝配置 Copy configuration](#拷贝配置-copy-configuration)
+  - [注意事项 Things need attention](#注意事项-things-need-attention)
+    - [完整转换示例 Full conversion example](#完整转换示例-full-conversion-example)
+  - [碎碎念 Shattered thoughts](#碎碎念-shattered-thoughts)
+  - [待做事项 TODO](#待做事项-todo)
+
+
+
 ## 使用方式 Usage
 
 ### 请提出issue Please issue
@@ -148,6 +169,7 @@ There are two ways to install this library:
   Here the information of all parameters will be printed in table and dictionary format at the same time. If you want to change the printing style, you can modify it by `config_with_name.set_print_style(style='')`. The values that can be taken for *style* are: `both`, `table`, `json` which means print both table and json at the same time, print only table, and json dictionary only.
 
   如：
+  
   E.g.:
 
   ```python
@@ -454,7 +476,7 @@ if __name__ == '__main__':
     hello(options)
 ```
 
-## Shattered thoughts 碎碎念
+## 碎碎念 Shattered thoughts
 
 以下描述了作者个人的开发原因以及此包的好处/便利性。
 
