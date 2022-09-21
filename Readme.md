@@ -10,7 +10,7 @@ If you think this tool is good, please gently click the **Star** button in the u
 
 # Easy-to-use Commandline Configuration Tool
 
-A library for users to write (experiment in research) configurations in Python Dict or JSON format, while can read parameters from the command line.
+A library for users to write (experiment in research) configurations in Python Dict or JSON format, while can read parameters from the command line to modify values.
 
 标签 Labels： Python, Command Line, commandline, config, configuration, parameters, 命令行，配置，传参，参数值修改。
 
@@ -38,7 +38,7 @@ Github URL: <https://github.com/NaiboWang/CommandlineConfig>
     - [Parameter naming convention](#parameter-naming-convention)
     - [Nested objects currently support only one layer](#nested-objects-currently-support-only-one-layer)
     - [Parameter integrity check, all parameters to be modified must be predefined](#parameter-integrity-check-all-parameters-to-be-modified-must-be-predefined)
-    - [Special configurations in ZSH environment](#special-configurations-in-zsh-environment)
+    - [Special configurations in zsh environment](#special-configurations-in-zsh-environment)
   - [Full conversion example](#full-conversion-example)
   - [Shattered thoughts](#shattered-thoughts)
   - [TODO](#todo)
