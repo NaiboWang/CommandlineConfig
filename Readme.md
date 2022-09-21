@@ -66,7 +66,7 @@ There are two ways to install this library:
     pip install commandline_config --upgrade
   ```
 
-* 2. Import the commandline_config.py file directly from the /commandline_config folder of the github project into your own project directory, you need to install the dependency package prettytable:
+* 2. Import the commandline_config.py file directly from the `/commandline_config` folder of the github project into your own project directory, you need to install the dependency package `prettytable`:
 
     ```shell
     pip install prettytable
@@ -80,7 +80,7 @@ There are two ways to install this library:
     from commandline_config import Config
     ```
 
-* 1. Set the parameter name and initial value in JSON/Python Dict format, and add the parameter description by # comment. Currently supports nesting a dict inside, but only one layer.
+* 1. Set the parameter name and initial value in JSON/Python Dict format, and add the parameter description by `#` comment. Currently supports nesting a dict inside, but only one layer.
 
     ```python
       preset_config = {
@@ -99,15 +99,15 @@ There are two ways to install this library:
       }
     ```
   
-  That is, the initial configuration of the program is generated. Each key defined in preset_config dict is the parameter name and each value is the initial value of the parameter, and at the same time, the initial value type of the parameter is automatically detected according to the type of the set value.
+  That is, the initial configuration of the program is generated. Each key defined in `preset_config` dict is the parameter name and each value is the initial value of the parameter, and at the same time, the initial value type of the parameter is automatically detected according to the type of the set value.
 
-  The above configuration contains six parameters: *index, dataset, batch, normalization, multi_information* and *dbinfo*, where the type of the parameter **index** is automatically detected as **int**, the default value is **1** and the description is "Index of party".
+  The above configuration contains six parameters: `index, dataset, batch, normalization, multi_information and dbinfo`, where the type of the parameter **index** is automatically detected as **int**, the default value is **1** and the description is "Index of party".
 
-  Similarly, The type and default value of the second to fifth parameter are string: "mnist"; float:0.01; bool:True; list:[1,0.5,'test', "TEST"].
+  Similarly, The type and default value of the second to fifth parameter are string: `"mnist"; float:0.01; bool:True; list:[1,0.5,'test', "TEST"]`.
 
   The sixth parameter is a nested dictionary of type dict, which also contains five parameters, with the same type and default values as the first five parameters, and will not be repeated here.
 
-* 2. Create a configuration class object by preset_config dict in any function you want.
+* 2. Create a configuration class object by `preset_config` dict in any function you want.
 
     ```python
     if __name__ == '__main__':
@@ -118,7 +118,7 @@ There are two ways to install this library:
 
   This means that the configuration object is successfully generated.
 
-* 3. Configuration of parameters can be printed directly via print function:
+* 3. Configuration of parameters can be printed directly via `print` function:
 
   ```python
     print(config_with_name)
@@ -151,7 +151,7 @@ There are two ways to install this library:
   +---------------------+-------+-----------------+
   ```
 
-  Here the information of all parameters will be printed in table and dictionary format at the same time. If you want to change the printing style, you can modify it by `config_with_name.set_print_style(style='')`. The values that can be taken for *style* are: `both`, `table`, `json` which means print both table and json at the same time, print only table, and json dictionary only.
+  Here the information of all parameters will be printed in table format. If you want to change the printing style, you can modify it by `config_with_name.set_print_style(style='')`. The values that can be taken for `style` are: `both`, `table`, `json` which means print both table and json at the same time, print only table, and json dictionary only.
 
   E.g.:
 
@@ -211,30 +211,30 @@ There are two ways to install this library:
 
 Configuration parameter values can be written in three ways.
 
-* 1. To receive command line arguments, simply pass --index 1 on the command line to modify the value of *index* to 1. Also, the considerations for passing values to different types of arguments are：
+* 1. To receive command line arguments, simply pass `--index 1` on the command line to modify the value of `index` to `1`. Also, the considerations for passing values to different types of arguments are：
   
-  * When passing bool type, you can use *0* or *False* for **False**, *1* or *True* or *no value after the parameter* for **True**: --normalization 1 or --normalization True or --normalization all can set the value of parameter *normalization* in the configuration to **True**.
+  * When passing bool type, you can use `0` or `False` for **False**, `1` or `True` or `no value after the parameter` for **True**: `--normalization 1` or `--normalization True` or `--normalization` all can set the value of parameter `normalization` in the configuration to **True**.
   * When passing list type, empty array and multi-dimensional arrays can be passed.
-  * To modify the value in the nested dict, please use "--nested-parameter-name.sub-parameter-name value" to modify the value in the nested object, such as --dbinfo.password 987654 to change the value of the *password* parameter in the *dbinfo* subobject to *987654*. Currently this tool only supports one level of nesting.
-  * Note that **the argument index must be in the preset_config object defined above:**
+  * To modify the value in the nested dict, please use `--nested-parameter-name.sub-parameter-name value` to modify the value in the nested object, such as `--dbinfo.password 987654` to change the value of the `password` parameter in the `dbinfo` subobject to `987654`. Currently this tool only supports one level of nesting.
+  * Note that **the argument index must be in the `preset_config` object defined above:**
   
   ```python
     python test.py --index 0 --dataset emnist --normalization 0 --multi_information [\'sdf\',1,\"3.3\",,True,[1,[]]] --dbinfo.password 987654
   ```
 
-* 2. Use `config.index = 2` directly in the code to change the value of the parameter index to 2. Again, list type parameters can be assigned as empty or multidimensional arrays. For nested objects, you can use `config.dbinfo.save_password=True` to modify the value of the save_password parameter in dbinfo to `True`.
+* 2. Use `config.index = 2` directly in the code to change the value of the parameter `index` to `2`. Again, list type parameters can be assigned as empty or multidimensional arrays. For nested objects, you can use `config.dbinfo.save_password=True` to modify the value of the `save_password` parameter in sub dict `dbinfo` to `True`.
 
-* 3. Way 1 and 2 will trigger type checking, that is, if the type of the assigned value and the type of the default value in the predefined dict *preset_config* does not match, the program will report an error, therefore, if you do not want to force type checking, you can use `config["index"] = "sdf"` to force the value of the parameter index to the string *sdf* (not recommended, it will cause unexpected impact).
+* 3. Way 1 and 2 will trigger type checking, that is, if the type of the assigned value and the type of the default value in the predefined dict `preset_config` does not match, the program will report an error, therefore, if you do not want to force type checking, you can use `config["index"] = "sdf"` to force the value of the parameter index to the string `sdf` (not recommended, it will cause unexpected impact).
 
 #### Reading method
 
-Read the value of the parameter *dataset* directly by means of config.dataset or config["dataset"].
+Read the value of the parameter `dataset` directly by means of `config.dataset` or `config["dataset"]`.
 
 ```python
 print(config.dataset, config["index"])
 ```
 
-The value of an argument *a* will be read by this order: the last value modified by config.a = * > the value of --a 2 specified by the command line > the initial value specified by "a":1 defined by preset_config.
+The value of an argument `a` will be read by this order: the last value modified by `config.a = *` > the value of `--a 2` specified by the command line > the initial value specified by `"a":1` defined by preset_config.
 
 For the list type, if a multidimensional array is passed, the information can be read via standard slice of python:
 
@@ -265,7 +265,7 @@ print_dataset_name(c=config)
 
 #### Copy configuration
 
-A deep copy of the configuration object can be made by the *deepcopy* method:
+A deep copy of the configuration object can be made by the `deepcopy` method:
 
 ```python
 from copy import deepcopy
@@ -276,7 +276,7 @@ copy_config.index=15
 
 #### Store configuration parameters to local file or a database
 
-The whole configuration parameters can be stored in a local file in JSON mode or uploaded to a remote server such as mongodb. You only need to get the corresponding JSON sequence of parameters through the `info = config.get_config()` command and then serialized with `json` library.
+The whole configuration parameters can be stored in a local file in JSON mode or uploaded to a remote server such as `mongodb`. You only need to get the corresponding JSON sequence of parameters through the `info = config.get_config()` command and then serialized with `json` library.
 
 For example, to store the `config_with_name` configuration to a local file:
 
@@ -316,16 +316,16 @@ Then we successfully save the configuration to the local `configuration.json` fi
 ## Things need attention
 
 ### Conflict with Argparse
-This library cannot read command line arguments at the same time with the argparse library, so please do not use args = parser.parse_args() to read command line arguments while using this library.
+This library cannot read command line arguments at the same time with the argparse library, so please do not use `args = parser.parse_args()` to read command line arguments while using this library.
 
 ### Input value forced conversion
-The type of the parameter will be automatically detected as the same type of the initial value set in preset_config, and the value of the command line parameter will be forced converted to the corresponding type value, such as the default value of index in the above preset_config dict is 1, then the type of the parameter index is **int** with the initial value of 1. If you specify --index 15.5 on the command line, the parameter index will be automatically assigned to value 15, that is, 15.5 will be automatically forced converted to int type.
+The type of the parameter will be automatically detected as the same type of the initial value set in `preset_config`, and the value of the command line parameter will be forced converted to the corresponding type value, such as the default value of `index` in the above `preset_config` dict is `1`, then the type of the parameter index is `int` with the initial value of `1`. If you specify `--index 15.5` on the command line, the parameter `index` will be automatically assigned to value `15`, that is, `15.5` will be automatically forced converted to `int` type.
 
-If the parameter value specified on the command line parameters can not be forcedly converted to specific type, it will report an error, such as if the command line specified --index sdf, as sdf with orignal format of string can not be converted to int type, so it will report an error.
+If the parameter value specified on the command line parameters can not be forcedly converted to specific type, it will report an error, such as if the command line specified `--index sdf`, as sdf with orignal format of `string` can not be converted to `int` type, so it will report an error.
 
 ### The list parameter needs to be assigned with a backslash before the string element quotes 
 
-When the command line argument is set to the input list type, if the element in the list is a string, you must use add a backslash \ before each single/double quote to parse it correctly, otherwise the argument value will be treated as an int or float type. If there are spaces in the command line they will be merged automatically (but the command line environment can not be *zsh*, if it is zsh environment then must remove all the spaces inside the list, *bash* and *sh* does not have this problem, that is, in the zsh environment, you cannot add any space(s) between 15 and \\\'12\\\' in `--a [15,\\'12\\']`).
+When the command line argument is set to the input `list` type, if the element in the list is a `string,` you must use add a `backslash \` before each `single/double quote` to parse it correctly, otherwise the argument value will be treated as an `int` or `float` type. If there are `spaces` in the command line they will be merged automatically (but the command line environment can not be `zsh`, if it is zsh environment then must remove all the spaces inside the list, `bash` and `sh` does not have this problem, that is, in the zsh environment, you cannot add any space(s) between `15` and `\'12\'` in `--a [15,\'12\']`).
 
 If the parameters can be set as follows:
 
@@ -333,33 +333,33 @@ If the parameters can be set as follows:
   python test.py --array [1,2.3,\'sdf\'] 
   ```
 
-That can correctly resolve the array parameter whose value is a list, and the content of [1,2.3,'sdf', "qwe"], that is, a list containing int, float, string type of data simultaneously.
+That can correctly resolve the array parameter whose value is a `list`, and the content of `[1,2.3,'sdf', "qwe"]`, that is, a list containing int, float, string type of data simultaneously.
 
 ### Parameter naming convention
 
-If the parameter name contains special characters such as -+ or space or other python reserved characters, you must use the middle bracket to read and write the parameter value instead of **.** E.g., if the parameter name is *multi-information*, it can only be accessed by *config["multi-information"]*, cannot do *config.multi-information*, because the minus sign - is a python language's reserved symbol.
+If the parameter name contains special characters such as `-+.` or `space` or `other python reserved characters`, you must use the `middle bracket []` to read and write the parameter value instead of **.** E.g., if the parameter name is `multi-information`, it can only be accessed by `config["multi-information"]`, cannot do `config.multi-information`, because the minus `sign -` is a python language's reserved symbol.
 
 ### Nested objects currently support only one layer
-Only one layer of nested objects is supported for now, other supported parameter types are: int, float, string, bool and list.
+Only one layer of nested objects is supported for now, other supported parameter types are: `int, float, string, bool and list`.
 
 ### Parameter integrity check, all parameters to be modified must be predefined
-The name of the parameter passed on the command line **must be defined in preset_config in advance, otherwise an error will be reported**, e.g.
+The name of the parameter passed on the command line **must be defined in `preset_config` in advance, otherwise an error will be reported**, e.g.
 
   ```python
     python test.py --arg1 1
   ```
 
-Since the parameter name *arg1* is not defined in preset_config dict, an error is reported indicating that the arg1 parameter is not defined. This function is set to perform parameter integrity checking to avoid entering incorrect parameter names through the command line.
+Since the parameter name `arg1` is not defined in `preset_config` dict, an error is reported indicating that the `arg1` parameter is not defined. This function is set to perform parameter integrity checking to avoid entering incorrect parameter names through the command line.
 
-### Special configurations in ZSH environment
-If `zsh: no matches found` occurs when passing list arguments in the ZSH Shell environment, please add a line `setopt no_nomatch` at the end of the `~/.zshrc` file, after save it then run `source ~/.zshrc` on the command line to refresh ZSH, then the problem will be solved.
+### Special configurations in zsh environment
+If `zsh: no matches found` occurs when passing list arguments in the zsh Shell environment, please add a line `setopt no_nomatch` at the end of the `~/.zshrc` file, after save it then run `source ~/.zshrc` on the command line to refresh zsh, then the problem will be solved.
 
 
 ## Full conversion example
 
-An example will be given below to demonstrate the convenience of this tool compared to the *argparse* tool:
+An example will be given below to demonstrate the convenience of this tool compared to the `argparse` tool.
 
-The code that needs to be written using the *argparse* tool:
+The code that needs to be written using the `argparse` tool:
 
 ```python
 parser = argparse.ArgumentParser(description='PyTorch local error training')
@@ -461,7 +461,7 @@ if __name__ == '__main__':
 
 The following describes the author's personal reasons for developing and the benefits/conveniences of this package.
 
-For us who often run research experiments, do you often need to set a lot of command line arguments at the beginning of a python file and call them in the following code as args.*：
+For us who often run research experiments, do you often need to set a lot of command line arguments at the beginning of a python file and call them in the following code as `args.*`：
 
 For example, the following example paragraph:
 
@@ -474,9 +474,9 @@ args = parser.parse_args()
 print(args.index)
 ```
 
-With one more additional parameter, we need to write one line of parser.add_argument(...), when handwriting configuration of each parameter, it will be very tedious such as the name needs to add --, and modify the default value, type and description of the time is very troublesome, finally will lead to very long code and inconvenient to maintain. 
+With one more additional parameter, we need to write one line of `parser.add_argument(...)`, when handwriting configuration of each parameter, it will be very tedious such as the name needs to add --, and modify the default value, type and description of the time is very troublesome, finally will lead to very long code and inconvenient to maintain. 
 
-Even if you use a more advanced library *click*, you still need to write option constantly, and you need to write the same amount of parameters at the input parameter field of the function to match all the option, writing code is really tedious, such as the following Click code:
+Even if you use a more advanced library `click`, you still need to write option constantly, and you need to write the same amount of parameters at the input parameter field of the function to match all the option, writing code is really tedious, such as the following Click code:
 
 ```python
 import click

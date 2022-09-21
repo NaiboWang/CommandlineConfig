@@ -315,17 +315,17 @@ with open("configuration.json", "w") as f:
 
 ### list参数赋值时字符串元素引号前需加反斜线
 
-命令行参数设置为输入list类型时，如果list中元素是字符串，则必须在每个单/双引号前加入反斜线\以正确解析，否则参数值会被视作int或float类型。如果命令行中有空格会被自动合并（但命令行环境不能是zsh，如果是zsh环境则必须去除list内部所有的空格，bash和sh不存在此问题，即在zsh环境下，`--a [15,\\'12\\']`的15和\\'12\\'之间不得有空格）。
+命令行参数设置为输入list类型时，如果list中元素是字符串，则必须在每个单/双引号前加入反斜线\以正确解析，否则参数值会被视作int或float类型。如果命令行中有空格会被自动合并（但命令行环境不能是zsh，如果是zsh环境则必须去除list内部所有的空格，bash和sh不存在此问题，即在zsh环境下，`--a [15,\'12\']`的15和\\'12\\'之间不得有空格）。
 
 如参数可设置为： 
 
 If the parameters can be set as follows:
 
 ```
-python test.py --array [1,2.3,\'sdf\'] 
+python test.py --array [1,2.3,\'sdf\',\"msg\"] 
 ```
 
-即可正确解析array参数，其值为一个list，内容为[1,2.3,'sdf'],即一个包含int, float, string类型的list。
+即可正确解析array参数，其值为一个list，内容为[1,2.3,'sdf',"msg"],即一个包含int, float, string类型的list。
 
 
 ### 参数命名规范
@@ -350,7 +350,7 @@ python test.py --array [1,2.3,\'sdf\']
 
 ## 完整转换示例
 
-下面将给出一个例子来证明此工具相比于argparse工具的便利性：
+下面将给出一个例子来证明此工具相比于argparse工具的便利性。
 
 使用argparse工具需要写的代码：
 
