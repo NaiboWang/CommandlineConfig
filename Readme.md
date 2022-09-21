@@ -6,7 +6,7 @@ If you think this tool is good, please gently click the **Star** button in the u
 
 # 中文文档
 
-[点此查看中文文档](Readme_CN.md)
+[点此查看中文文档](https://github.com/NaiboWang/CommandlineConfig/blob/master/Readme_CN.md)
 
 # Easy-to-use Commandline Configuration Tool
 
