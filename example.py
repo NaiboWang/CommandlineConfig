@@ -41,6 +41,7 @@ from copy import deepcopy
 # c.nested.c = "15.6"
 # print(c)
 
+
 preset_config = {
     "index": 1,  # Index of party
     "dataset": "mnist",
@@ -72,8 +73,17 @@ advanced_options = {
     },
 }
 
+helpers = {
+    "index": "index of information",
+    "dbinfo_help": "information dict for database",
+    "dbinfo": {
+        "username": "username for database",
+    }
+}
+
 config_with_name = Config(
-    preset_config, name="Federated Learning Experiments", options=advanced_options)
+    preset_config, name="Federated Learning Experiments", options=advanced_options, helpers=helpers)
+config_with_name.help()
 
 # config_with_name.index = "5.5"
 config_with_name.dataset = "[]"

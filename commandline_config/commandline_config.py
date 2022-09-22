@@ -1,5 +1,6 @@
 from copy import deepcopy
 import sys
+from uuid import RESERVED_FUTURE
 from prettytable import PrettyTable
 
 
@@ -44,10 +45,11 @@ class Config(dict):
 
     """
 
-    def __init__(self, preset_config, name="", read_command_line=True, print_style='table', options={}):
+    def __init__(self, preset_config, name="", read_command_line=True, print_style='table', options={}, helpers={}):
         self.__setattr__("preset_config", preset_config, True)
         # self.preset_config = preset_config
         self.__setattr__("__options", options, True)
+        self.__setattr__("__helpers", helpers, True)
         for c in self.preset_config:
             if c == "preset_config":  # Prevent Loop 防止套娃
                 continue
@@ -55,10 +57,12 @@ class Config(dict):
             if type == "dict":
                 if c in options:
                     option = options[c]
+                    helper = helpers[c]
                 else:
                     option = {}
+                    helper = {}
                 self[c] = Config(self.preset_config[c],
-                                 name="dict "+c, read_command_line=False, options=option)
+                                 name="dict "+c, read_command_line=False, options=option, helpers=helper)
             else:
                 self.check_enum(c, self.preset_config[c])
                 self[c] = self.preset_config[c]
@@ -93,9 +97,13 @@ class Config(dict):
                     v = self.convert_type(value, key)
                     self[key] = v
                 # print("after convert key-value:", key, v, check_type(v))
+            elif lines[i].find("-h") >= 0 or lines[i].find("-help") >= 0:  # want help
+                self.help()
+                exit(0)
 
     # 把变量v按照preset_config里的相应key对应的值的类型转换为相应类型，用于命令行参数类型转换，同时保证了所有参数必须在preset_config中出现
     # 如preset_config里的random_seed为2022,是一个int类型，则命令行参数如果指定了--random_seed 2013,则会把2013由原始的字符串形式转换为int
+
     def convert_type(self, v, key):
         try:
             v = str(v)
@@ -183,6 +191,40 @@ class Config(dict):
 
         return ""
 
+    def help(self):
+        if self.config_name == "":
+            print("\nParameter helps:")
+        else:
+            print("\nParameter helps for %s: " % self.config_name)
+        output = PrettyTable(["Key", "Type", "Comments"])
+        output.align["Value"] = 'l'
+        output.align["Comments"] = 'l'
+        for key in self.preset_config:
+            type = check_type(self[key])
+            if type != "dict":
+                try:
+                    output.add_row(
+                        [key, str(check_type(self.preset_config[key])), str(self["__helpers"][key])])
+                except:
+                    output.add_row(
+                        [key, str(check_type(self.preset_config[key])), "-"])
+            else:
+                try:
+                    # print(key+"_help")
+                    output.add_row(
+                        [key, str(check_type(self.preset_config[key])), str(self["__helpers"][key+"_help"])])
+                except:
+                    output.add_row(
+                        [key, str(check_type(self.preset_config[key])), "-"])
+        print(output)
+
+        for key in self.preset_config:
+            type = check_type(self[key])
+            if type == "dict":
+                self[key].help()
+
+        return ""
+
     def get_config(self):
         output = {}
         for key in self.preset_config:
@@ -201,7 +243,7 @@ class Config(dict):
             if "enum" in config:
                 enum = config["enum"]
                 v = self.convert_type(value, name)
-                print(name, v)
+                # print(name, v)
                 if v not in enum:
                     raise AttributeError(
                         "Can not set value %s because the key '%s' has set enum list and you the value %s is not in the enum list %s!" % (str(value), name, str(value), str(enum)))
@@ -213,7 +255,9 @@ class Config(dict):
             raise AttributeError(name)
 
     def __setattr__(self, name, value, no_check_type=False):
-        if name == "preset_config" or name == "config_name" or name == "print_style" or name == "__options" or name in self.preset_config:
+        RESERVED_NAMES = ["preset_config", "config_name",
+                          "print_style", "__options", "__helpers"]
+        if name in RESERVED_NAMES or name in self.preset_config:
             if no_check_type:
                 self[name] = value
             else:

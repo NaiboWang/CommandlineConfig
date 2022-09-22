@@ -33,6 +33,9 @@ Github URL: <https://github.com/NaiboWang/CommandlineConfig>
       - [Store configuration parameters to local file or a database](#store-configuration-parameters-to-local-file-or-a-database)
   - [Advanced options](#advanced-options)
     - [Restrict parameter input values to fixed enum types](#restrict-parameter-input-values-to-fixed-enum-types)
+    - [Print parameter help descriptions](#print-parameter-help-descriptions)
+      - [Set parameter descriptions](#set-parameter-descriptions)
+      - [Print parameter help](#print-parameter-help)
   - [Things need attention](#things-need-attention)
     - [Conflict with Argparse](#conflict-with-argparse)
     - [Input value forced conversion](#input-value-forced-conversion)
@@ -317,14 +320,14 @@ Then we successfully save the configuration to the local `configuration.json` fi
 ```
 ## Advanced options
 
+### Restrict parameter input values to fixed enum types
+
 Set advanced options, such as enumerating Enum types, by passing the `options` parameter of the `Config` argument to the `Config` class.
 
 ```python
 option={}
 config = Config(preset_config, options=option)
 ```
-
-### Restrict parameter input values to fixed enum types
 
 If you want to limit the value of a parameter to a certain range, you can do so by configuring:
 
@@ -377,6 +380,70 @@ If enum is set, the following three ways to set a parameter to a value other tha
 
   AttributeError: Can not set value nus because the key 'username' has set enum list and you the value nus is not in the enum list ['XDU', 'ZJU', 'NUS']!
   ```
+
+### Print parameter help descriptions
+
+#### Set parameter descriptions
+
+Set the parameter description helpers by specifying the `helpers` parameter in the `Config` class.
+
+```python
+helpers = {
+    "index": "index of information",
+    "dbinfo_help": "information dict for database",
+    "dbinfo": {
+        "username": "username for database",
+    }
+}
+
+config = Config(preset_config, helpers=helpers)
+```
+
+Note that since the `dbinfo` parameter is a `dict`, if you want to set the parameter description for `dbinfo`, you need to set a `dbinfo_help` dictionary to write the description in the `helpers` dictionary, i.e. add `_help` after the dict parameter name to set the parameter description for the dict field.
+
+#### Print parameter help
+
+Two ways to print parameter descriptions, by passing `-h` or `-help` on the command line, or by calling the `help()` function in code.
+
+```python
+config.help()
+```
+
+or
+
+```shell
+python example.py -h
+# OR
+python example.py -help
+```
+
+Note that it is only one short slash `-` and no other command line arguments be added to get help instructions, and the output of both methods is:
+
+```shell
+Parameter helps for Federated Learning Experiments:
++-------------------+-------+-------------------------------+
+|        Key        |  Type | Comments                      |
++-------------------+-------+-------------------------------+
+|       index       |  int  | index of information          |
+|      dataset      |  str  | -                             |
+|         lr        | float | -                             |
+|   normalization   |  bool | -                             |
+| multi_information |  list | -                             |
+|       dbinfo      |  dict | information dict for database |
++-------------------+-------+-------------------------------+
+
+Parameter helps for dict dbinfo:
++---------------------+-------+-----------------------+
+|         Key         |  Type | Comments              |
++---------------------+-------+-----------------------+
+|       username      |  str  | username for database |
+|       password      |  int  | -                     |
+| retry_interval_time | float | -                     |
+|    save_password    |  bool | -                     |
+|   certificate_info  |  list | -                     |
++---------------------+-------+-----------------------+
+```
+
 
 ## Things need attention
 

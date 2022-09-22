@@ -22,6 +22,9 @@
       - [配置参数存储至本地或数据库](#配置参数存储至本地或数据库)
   - [高级配置](#高级配置)
     - [限制参数输入值为固定枚举类型](#限制参数输入值为固定枚举类型)
+    - [打印参数帮助说明](#打印参数帮助说明)
+      - [设置参数说明](#设置参数说明)
+      - [打印参数帮助](#打印参数帮助)
   - [注意事项](#注意事项)
     - [与Argparse冲突](#与argparse冲突)
     - [输入值会自动强制转换为默认值对应类型](#输入值会自动强制转换为默认值对应类型)
@@ -307,14 +310,14 @@ with open("configuration.json", "w") as f:
 
 ## 高级配置
 
-通过传递Config参数的options参数至Config类以设置高级选项，如枚举Enum类型等。
+### 限制参数输入值为固定枚举类型
+
+通过传递Config参数的options参数至Config类以设置高级选项，这里是设置枚举Enum类型。
 
 ```python
 option={}
 config = Config(preset_config, options=option)
 ```
-
-### 限制参数输入值为固定枚举类型
 
 如想要某参数的值限定在某范围，则可以通过配置：
 
@@ -367,6 +370,69 @@ config = Config(preset_config, options=advanced_options)
 
   AttributeError: Can not set value nus because the key 'username' has set enum list and you the value nus is not in the enum list ['XDU', 'ZJU', 'NUS']!
   ```
+
+### 打印参数帮助说明
+
+#### 设置参数说明
+
+通过在Config类指定helpers参数来设置参数说明helpers：
+
+```python
+helpers = {
+    "index": "index of information",
+    "dbinfo_help": "information dict for database",
+    "dbinfo": {
+        "username": "username for database",
+    }
+}
+
+config = Config(preset_config, helpers=helpers)
+```
+
+注意，由于dbinfo参数为dict，因此若想给dbinfo设置参数说明，则需要在helpers字典中设置一个dbinfo_help字典来写说明，即在dict参数名后加_help来设置dict字段的参数说明。
+
+#### 打印参数帮助
+
+两种方式打印参数说明，命令行传递-h或-help，以及在代码中调用config.help()函数：
+
+```python
+config.help()
+```
+
+或
+
+```shell
+python example.py -h
+# 或
+python example.py -help
+```
+注意是一个短斜线且不可加任何其他命令行参数，才可获取帮助说明，两种方式输出结果均为：
+
+```shell
+Parameter helps for Federated Learning Experiments:
++-------------------+-------+-------------------------------+
+|        Key        |  Type | Comments                      |
++-------------------+-------+-------------------------------+
+|       index       |  int  | index of information          |
+|      dataset      |  str  | -                             |
+|         lr        | float | -                             |
+|   normalization   |  bool | -                             |
+| multi_information |  list | -                             |
+|       dbinfo      |  dict | information dict for database |
++-------------------+-------+-------------------------------+
+
+Parameter helps for dict dbinfo:
++---------------------+-------+-----------------------+
+|         Key         |  Type | Comments              |
++---------------------+-------+-----------------------+
+|       username      |  str  | username for database |
+|       password      |  int  | -                     |
+| retry_interval_time | float | -                     |
+|    save_password    |  bool | -                     |
+|   certificate_info  |  list | -                     |
++---------------------+-------+-----------------------+
+```
+
 
 ## 注意事项
 
@@ -580,4 +646,6 @@ if __name__ == '__main__':
 ## 待开发
 
 * 实现多层循环嵌套功能。
-* 高级配置功能以实现更多效果，如更改命令行输入方式等，欢迎提出issues。
+* 高级配置功能以实现更多效果，如
+* 
+* 更改命令行输入方式等，欢迎提出issues。
