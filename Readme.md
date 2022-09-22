@@ -51,6 +51,9 @@ Github URL: <https://github.com/NaiboWang/CommandlineConfig>
 
 If you encounter any problems during using with this tool, please raise an issue in the github page of this project, I will solve the bugs and problems encountered at the first time.
 
+**Meanwhile, welcome to submit issues to propose what functions you want to add to this tool and I will implement them when possible.** 
+
+
 ### Installation
 
 There are two ways to install this library:
@@ -520,4 +523,7 @@ Similar tools including:
 
 ## TODO
 
+**Welcome to submit issues to propose what functions you want to add to this tool and I will implement them when possible.** 
+
 * Implement multi-layer loop nesting function.
+* Advanced options to support more advanced features such as constrain paparmeter value range (enum), commandline style (instead of use --, can change to - or +), etc.
