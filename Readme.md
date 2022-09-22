@@ -31,6 +31,10 @@ Github URL: <https://github.com/NaiboWang/CommandlineConfig>
       - [Pass configuration to functions](#pass-configuration-to-functions)
       - [Copy configuration](#copy-configuration)
       - [Store configuration parameters to local file or a database](#store-configuration-parameters-to-local-file-or-a-database)
+  - [Advanced options](#advanced-options)
+    - [Restrict parameter input values to fixed enum types](#restrict-parameter-input-values-to-fixed-enum-types)
+  - [高级配置](#高级配置)
+    - [限制参数输入值为固定枚举类型](#限制参数输入值为固定枚举类型)
   - [Things need attention](#things-need-attention)
     - [Conflict with Argparse](#conflict-with-argparse)
     - [Input value forced conversion](#input-value-forced-conversion)
@@ -313,7 +317,131 @@ Then we successfully save the configuration to the local `configuration.json` fi
 }
 
 ```
+## Advanced options
 
+Set advanced options, such as enumerating Enum types, by passing the `options` parameter of the `Config` argument to the `Config` class.
+
+```python
+option={}
+config = Config(preset_config, options=option)
+```
+
+### Restrict parameter input values to fixed enum types
+
+If you want to limit the value of a parameter to a certain range, you can do so by configuring:
+
+```python
+advanced_options = {
+    'lr': {
+        "enum": [0.001, 15.5, 0.01, 0.1] # restrict the lr value to one of 0.001, 15.5, 0.01, 0.1
+    },
+    'index': {
+        "enum": [1, 2, 3] # Restrict the index value to 1, 2 and 3
+    },
+    "dbinfo": {
+        "username": {
+            "enum": ["XDU", "ZJU", "NUS"] # restrict the dbinfo.username field to XDU, ZJU and NUS
+        }
+    },
+}
+
+config = Config(preset_config, options=advanced_options)
+```
+
+If enum is set, the following three ways to set a parameter to a value other than the qualified/speficied value will all report an error.
+
+* 1. The initial value of `index` is set to a value other than `1,2,3` in `preset_config`:
+
+  ```python
+  preset_config = {
+    "index":4,
+  }
+  ```
+
+* 2. The command line passes unqualified/unspecified values for the `lr` argument
+
+  ```shell
+  python example.py --lr 0.02
+  ```
+
+* 3. The code changes the value of `dbinfo.username` to a value other than `XDU, ZJU and NUS`.
+
+  ```python
+  config.dbinfo.username = "UEST"
+  ```
+
+  The output are:
+
+  ```Shell
+  AttributeError: Can not set value 4 because the key 'index' has set enum list and you the value 4 is not in the enum list [1, 2, 3]!
+
+  AttributeError: Can not set value 0.02 because the key 'lr' has set enum list and you the value 0.02 is not in the enum list [0.001, 15.5, 0.01, 0.1]!
+
+  AttributeError: Can not set value nus because the key 'username' has set enum list and you the value nus is not in the enum list ['XDU', 'ZJU', 'NUS']!
+  ```
+
+## 高级配置
+
+通过传递Config参数的options参数至Config类以设置高级选项，如枚举Enum类型等。
+
+```python
+option={}
+config = Config(preset_config, options=option)
+```
+
+### 限制参数输入值为固定枚举类型
+
+如想要某参数的值限定在某范围，则可以通过配置
+
+```python
+advanced_options = {
+    'lr': {
+        "enum": [0.001, 15.5, 0.01, 0.1] # 限制lr值只能取0.001，15.5，0.01，0.1中的一个
+    },
+    'index': {
+        "enum": [1, 2, 3] # 限制index值只能设置为1，2和3
+    },
+    "dbinfo": {
+        "username": {
+            "enum": ["XDU", "ZJU", "NUS"] # 限制dbinfo.username字段只能输入XDU，ZJU和NUS
+        }
+    },
+}
+
+config = Config(preset_config, options=advanced_options)
+```
+
+如设置了enum，则以下三种方式设置为限定值以外的值，均会报错：
+
+* 1. 在preset_config中设置了index的初始值为1,2,3以外的值
+
+  ```python
+  preset_config = {
+    "index":4,
+  }
+  ```
+
+* 2.命令行为lr参数传递了非限定值
+
+  ```shell
+  python example.py --lr 0.02
+  ```
+
+* 3. 代码中修改了dbinfo.username的值为XDU，ZJU和NUS以外的值：
+
+  ```python
+  config.dbinfo.username = "UEST"
+  ```
+
+  输出分别为：
+
+  ```Shell
+  AttributeError: Can not set value 4 because the key 'index' has set enum list and you the value 4 is not in the enum list [1, 2, 3]!
+
+  AttributeError: Can not set value 0.02 because the key 'lr' has set enum list and you the value 0.02 is not in the enum list [0.001, 15.5, 0.01, 0.1]!
+
+  AttributeError: Can not set value nus because the key 'username' has set enum list and you the value nus is not in the enum list ['XDU', 'ZJU', 'NUS']!
+  ```
 
 
 ## Things need attention
@@ -526,4 +654,4 @@ Similar tools including:
 **Welcome to submit issues to propose what functions you want to add to this tool and I will implement them when possible.** 
 
 * Implement multi-layer loop nesting function.
-* Advanced options to support more advanced features such as constrain paparmeter value range (enum), commandline style (instead of use --, can change to - or +), etc.
+* Advanced options to support more advanced features such as commandline style (instead of use --, can change to - or +), etc.

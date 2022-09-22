@@ -20,6 +20,8 @@
       - [传递配置给函数](#传递配置给函数)
       - [拷贝配置](#拷贝配置)
       - [配置参数存储至本地或数据库](#配置参数存储至本地或数据库)
+  - [高级配置](#高级配置)
+    - [限制参数输入值为固定枚举类型](#限制参数输入值为固定枚举类型)
   - [注意事项](#注意事项)
     - [与Argparse冲突](#与argparse冲突)
     - [输入值会自动强制转换为默认值对应类型](#输入值会自动强制转换为默认值对应类型)
@@ -303,6 +305,68 @@ with open("configuration.json", "w") as f:
 
 ```
 
+## 高级配置
+
+通过传递Config参数的options参数至Config类以设置高级选项，如枚举Enum类型等。
+
+```python
+option={}
+config = Config(preset_config, options=option)
+```
+
+### 限制参数输入值为固定枚举类型
+
+如想要某参数的值限定在某范围，则可以通过配置：
+
+```python
+advanced_options = {
+    'lr': {
+        "enum": [0.001, 15.5, 0.01, 0.1] # 限制lr值只能取0.001，15.5，0.01，0.1中的一个
+    },
+    'index': {
+        "enum": [1, 2, 3] # 限制index值只能设置为1，2和3
+    },
+    "dbinfo": {
+        "username": {
+            "enum": ["XDU", "ZJU", "NUS"] # 限制dbinfo.username字段只能输入XDU，ZJU和NUS
+        }
+    },
+}
+
+config = Config(preset_config, options=advanced_options)
+```
+
+如设置了enum，则以下三种方式设置为限定值以外的值，均会报错：
+
+* 1. 在preset_config中设置了index的初始值为1,2,3以外的值
+
+  ```python
+  preset_config = {
+    "index":4,
+  }
+  ```
+
+* 2.命令行为lr参数传递了非限定值
+
+  ```shell
+  python example.py --lr 0.02
+  ```
+
+* 3. 代码中修改了dbinfo.username的值为XDU，ZJU和NUS以外的值：
+
+  ```python
+  config.dbinfo.username = "UEST"
+  ```
+
+  输出分别为：
+
+  ```Shell
+  AttributeError: Can not set value 4 because the key 'index' has set enum list and you the value 4 is not in the enum list [1, 2, 3]!
+
+  AttributeError: Can not set value 0.02 because the key 'lr' has set enum list and you the value 0.02 is not in the enum list [0.001, 15.5, 0.01, 0.1]!
+
+  AttributeError: Can not set value nus because the key 'username' has set enum list and you the value nus is not in the enum list ['XDU', 'ZJU', 'NUS']!
+  ```
 
 ## 注意事项
 
@@ -516,4 +580,4 @@ if __name__ == '__main__':
 ## 待开发
 
 * 实现多层循环嵌套功能。
-* 高级配置功能以实现更多效果，如限制参数值域（枚举），更改命令行输入方式等，欢迎提出issues。
+* 高级配置功能以实现更多效果，如更改命令行输入方式等，欢迎提出issues。

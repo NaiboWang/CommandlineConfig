@@ -51,23 +51,38 @@ preset_config = {
     # },
     "multi_information": [1, 0.5, 'test', "TEST"],  # list
     "dbinfo": {
-        "username": "nus",
+        "username": "NUS",
         "password": 123456,
         "retry_interval_time": 5.5,
         "save_password": False,
         "certificate_info": ["1", 2, [3.5]]
     }
 }
-config_with_name = Config(preset_config, name="Federated Learning Experiments")
+advanced_options = {
+    'lr': {
+        "enum": [0.001, 15.5, 0.01, 0.1]  # 限制lr值只能取0.001，15.5，0.01，0.1中的一个
+    },
+    'index': {
+        "enum": [1, 2, 3]  # 限制index值只能设置为1，2和3
+    },
+    "dbinfo": {
+        "username": {
+            "enum": ["XDU", "ZJU", "NUS"]  # 限制dbinfo.username字段只能输入XDU，ZJU和NUS
+        }
+    },
+}
 
-config_with_name.index = "5.5"
+config_with_name = Config(
+    preset_config, name="Federated Learning Experiments", options=advanced_options)
+
+# config_with_name.index = "5.5"
 config_with_name.dataset = "[]"
 config_with_name.lr = "15.5"
 config_with_name.normalization = True
 config_with_name.multi_information = [2, 'sd', 'sdfdsf']
 config_with_name["dataset"] = "sdf"
-config_with_name.dbinfo.username = "test"
-config_with_name.dbinfo.password = "1"
+# config_with_name.dbinfo.username = "sdfasd"
+# config_with_name.dbinfo.password = "1"
 # config_with_name.sdf = 1
 config_with_name.dbinfo.retry_interval_time = "22"
 config_with_name.dbinfo.save_password = False

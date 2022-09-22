@@ -44,18 +44,25 @@ class Config(dict):
 
     """
 
-    def __init__(self, preset_config, name="", read_command_line=True, print_style='table'):
+    def __init__(self, preset_config, name="", read_command_line=True, print_style='table', options={}):
         self.__setattr__("preset_config", preset_config, True)
         # self.preset_config = preset_config
+        self.__setattr__("__options", options, True)
         for c in self.preset_config:
             if c == "preset_config":  # Prevent Loop 防止套娃
                 continue
             type = check_type(self.preset_config[c])
             if type == "dict":
+                if c in options:
+                    option = options[c]
+                else:
+                    option = {}
                 self[c] = Config(self.preset_config[c],
-                                 name="dict "+c, read_command_line=False)
+                                 name="dict "+c, read_command_line=False, options=option)
             else:
+                self.check_enum(c, self.preset_config[c])
                 self[c] = self.preset_config[c]
+
         self.__setattr__("config_name", name, True)
         self.__setattr__("print_style", print_style, True)
         if read_command_line:
@@ -82,6 +89,7 @@ class Config(dict):
                     # print("----------", main_key, sub_key, value)
                     self[main_key].__setattr__(sub_key, value)
                 else:
+                    self.check_enum(key, value)
                     v = self.convert_type(value, key)
                     self[key] = v
                 # print("after convert key-value:", key, v, check_type(v))
@@ -187,6 +195,17 @@ class Config(dict):
                 output[key] = self[key]
         return output
 
+    def check_enum(self, name, value):
+        if name in self["__options"]:
+            config = self["__options"][name]
+            if "enum" in config:
+                enum = config["enum"]
+                v = self.convert_type(value, name)
+                print(name, v)
+                if v not in enum:
+                    raise AttributeError(
+                        "Can not set value %s because the key '%s' has set enum list and you the value %s is not in the enum list %s!" % (str(value), name, str(value), str(enum)))
+
     def __getattr__(self, name):
         try:
             return self[name]
@@ -194,10 +213,12 @@ class Config(dict):
             raise AttributeError(name)
 
     def __setattr__(self, name, value, no_check_type=False):
-        if name == "preset_config" or name == "config_name" or name == "print_style" or name in self.preset_config:
+        if name == "preset_config" or name == "config_name" or name == "print_style" or name == "__options" or name in self.preset_config:
             if no_check_type:
                 self[name] = value
             else:
+                print(name, name in self["__options"])
+                self.check_enum(name, value)
                 v = self.convert_type(value, name)
                 self[name] = v
         else:
