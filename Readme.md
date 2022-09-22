@@ -419,7 +419,7 @@ python example.py -help
 
 Note that it is only one short slash `-` and no other command line arguments be added to get help instructions, and the output of both methods is:
 
-```shell
+```
 Parameter helps for Federated Learning Experiments:
 +-------------------+-------+-------------------------------+
 |        Key        |  Type | Comments                      |

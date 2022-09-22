@@ -408,7 +408,7 @@ python example.py -help
 ```
 注意是一个短斜线且不可加任何其他命令行参数，才可获取帮助说明，两种方式输出结果均为：
 
-```shell
+```
 Parameter helps for Federated Learning Experiments:
 +-------------------+-------+-------------------------------+
 |        Key        |  Type | Comments                      |
