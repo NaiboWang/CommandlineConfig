@@ -112,8 +112,8 @@
         # 或者给配置设定名称：
         config_with_name = Config(preset_config, name="Federated Learning Experiments")
 
-        # 或者可以将preset_config存储到如configuartion.json文件中，并给Config类传递文件名：
-        config_from_file = Config("configuartion.json")
+        # 或者可以将preset_config存储到如configuration.json文件中，并给Config类传递文件名：
+        config_from_file = Config("configuration.json")
     ```
 
   即成功生成配置对象。

@@ -123,8 +123,8 @@ There are two ways to install this library:
         # Or give the configuration a name:
         config_with_name = Config(preset_config, name="Federated Learning Experiments")
 
-        # Or you can store the preset_config in local file configuartion.json and pass the filename to the Config class.
-        config_from_file = Config("configuartion.json")
+        # Or you can store the preset_config in local file configuration.json and pass the filename to the Config class.
+        config_from_file = Config("configuration.json")
     ```
 
   This means that the configuration object is successfully generated.
