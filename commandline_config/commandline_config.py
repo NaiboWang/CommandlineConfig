@@ -1,5 +1,6 @@
 from copy import deepcopy
 import sys
+import json
 from uuid import RESERVED_FUTURE
 from prettytable import PrettyTable
 
@@ -45,14 +46,20 @@ class Config(dict):
 
     """
 
-    def __init__(self, preset_config, name="", read_command_line=True, print_style='table', options={}, helpers={}):
-        self.__setattr__("preset_config", preset_config, True)
+    def __init__(self, preset_config, name="config", read_command_line=True, print_style='table', options={}, helpers={}):
         # self.preset_config = preset_config
         self.__setattr__("__options", options, True)
         self.__setattr__("__helpers", helpers, True)
+        preset_type = check_type(preset_config)
+        if preset_type == "str":
+            with open(preset_config, 'r') as f:
+                preset_config = json.load(f)
+        # print(preset_config)
+        self.__setattr__("preset_config", preset_config, True)
         for c in self.preset_config:
             if c == "preset_config":  # Prevent Loop 防止套娃
                 continue
+            print(c)
             type = check_type(self.preset_config[c])
             if type == "dict":
                 if c in options:
@@ -160,7 +167,7 @@ class Config(dict):
                 self[c].set_print_style(style)
 
     def __str__(self):
-        if self.config_name == "":
+        if self.config_name == "config":
             print("\nConfigurations:")
         else:
             print("\nConfigurations of %s: " % self.config_name)
@@ -192,7 +199,7 @@ class Config(dict):
         return ""
 
     def help(self):
-        if self.config_name == "":
+        if self.config_name == "config":
             print("\nParameter helps:")
         else:
             print("\nParameter helps for %s: " % self.config_name)
@@ -237,6 +244,14 @@ class Config(dict):
                 output[key] = self[key]
         return output
 
+    def save(self, file_name=None):
+        if file_name == None:
+            file_name = self.config_name.replace(" ", "_") + ".json"
+
+        configuration = self.get_config()
+        with open(file_name, "w") as f:
+            json.dump(configuration, f)
+
     def check_enum(self, name, value):
         if name in self["__options"]:
             config = self["__options"][name]
@@ -261,7 +276,7 @@ class Config(dict):
             if no_check_type:
                 self[name] = value
             else:
-                print(name, name in self["__options"])
+                # print(name, name in self["__options"])
                 self.check_enum(name, value)
                 v = self.convert_type(value, name)
                 self[name] = v

@@ -1,0 +1,1 @@
+{"index": 1, "dataset": "mnist", "lr": 0.01, "normalization": true, "multi_information": [1, 0.5, "test", "TEST"], "dbinfo": {"username": "NUS", "password": 123456, "retry_interval_time": 5.5, "save_password": false, "certificate_info": ["1", 2, [3.5]]}}

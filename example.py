@@ -84,7 +84,7 @@ helpers = {
 config_with_name = Config(
     preset_config, name="Federated Learning Experiments", options=advanced_options, helpers=helpers)
 config_with_name.help()
-
+config_with_name.save("commandline_config/test.json")
 # config_with_name.index = "5.5"
 config_with_name.dataset = "[]"
 config_with_name.lr = "15.5"

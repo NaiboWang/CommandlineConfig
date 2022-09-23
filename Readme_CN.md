@@ -111,6 +111,9 @@
         config = Config(preset_config)
         # 或者给配置设定名称：
         config_with_name = Config(preset_config, name="Federated Learning Experiments")
+
+        # 或者可以将preset_config存储到如configuartion.json文件中，并给Config类传递文件名：
+        config_from_file = Config("configuartion.json")
     ```
 
   即成功生成配置对象。
@@ -273,21 +276,15 @@ copy_config.index=15
 
 #### 配置参数存储至本地或数据库
 
-整个参数配置可以json方式存储到本地文件中，或者上传到如mongodb的远程服务器，只需要通过`info = config.get_config()`命令得到参数对应的json序列，再用json库进行序列化即可。
+整个参数配置可以json方式存储到本地文件中，或者上传到如mongodb的远程服务器：
 
-例如，将`config_with_name`配置存储到本地文件：
+存储文件时，只需要通过`config.save()`将配置存储为同级目录的`配置名称（如无名称则为config）.json`文件，或可指定文件名和路径：
 
 ```python
-with open("configuration.json", "w") as f:
-    configuration = config_with_name.get_config()
-    # 可直接打印json配置
-    print(configuration) 
-    
-    # 存储为json文件
-    json.dump(configuration, f)
+config.save("config/test_config.json")
 ```
 
-即可将配置存储到本地`configuration.json`文件，文件内容为：
+即我们成功地将配置保存到本地的`config`文件夹下的`configuration.json`文件。该文件内容如下。
 
 ```json
 {
@@ -305,7 +302,30 @@ with open("configuration.json", "w") as f:
     "certificate_info": [1, [], [[2]]]
   }
 }
+```
 
+若想将配置信息存储到数据库中，如`mongodb`，你需要先用`info = config.get_config()`命令获得参数对应的json序列，然后用`json`库将其序列化。
+
+整个配置参数可以以JSON模式存储在本地文件中，或上传到远程服务器，如`mongodb`。你需要通过`info = config.get_config()`命令获得相应的JSON参数序列，然后用相应的插入命令插入。
+
+例如，要将`config_with_name`配置存储到`mongodb`：
+
+```python
+import pymongo
+myclient = pymongo.MongoClient('mongodb://username:example.com:27017/', connect=False)
+mydb = myclient['exps']
+table = mydb["table"]
+# 得到配置信息
+configuration = config.get_config()
+# 插入配置信息到mongodb数据库
+table.insert_one(configuration)
+
+# 或者作为一个大型dict的一部分
+all_info = {
+  "exp_time":"20220925",
+  "configuration":configuration
+}
+table.insert_one(all_info)
 ```
 
 ## 高级配置
@@ -389,7 +409,7 @@ helpers = {
 config = Config(preset_config, helpers=helpers)
 ```
 
-注意，由于dbinfo参数为dict，因此若想给dbinfo设置参数说明，则需要在helpers字典中设置一个dbinfo_help字典来写说明，即在dict参数名后加_help来设置dict字段的参数说明。
+注意，由于dbinfo参数为dict，因此若想给dbinfo设置参数说明，则需要在helpers字典中设置一个dbinfo_help参数来写说明，即在dict参数名后加_help来设置dict字段的参数说明。
 
 #### 打印参数帮助
 

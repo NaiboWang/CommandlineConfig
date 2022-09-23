@@ -30,7 +30,7 @@ Github URL: <https://github.com/NaiboWang/CommandlineConfig>
       - [Reading method](#reading-method)
       - [Pass configuration to functions](#pass-configuration-to-functions)
       - [Copy configuration](#copy-configuration)
-      - [Store configuration parameters to local file or a database](#store-configuration-parameters-to-local-file-or-a-database)
+      - [Store configuration parameters to local file or database](#store-configuration-parameters-to-local-file-or-database)
   - [Advanced options](#advanced-options)
     - [Restrict parameter input values to fixed enum types](#restrict-parameter-input-values-to-fixed-enum-types)
     - [Print parameter help descriptions](#print-parameter-help-descriptions)
@@ -122,6 +122,9 @@ There are two ways to install this library:
         config = Config(preset_config)
         # Or give the configuration a name:
         config_with_name = Config(preset_config, name="Federated Learning Experiments")
+
+        # Or you can store the preset_config in local file configuartion.json and pass the filename to the Config class.
+        config_from_file = Config("configuartion.json")
     ```
 
   This means that the configuration object is successfully generated.
@@ -282,23 +285,15 @@ copy_config = deepcopy(config)
 copy_config.index=15 
 ```
 
-#### Store configuration parameters to local file or a database
+#### Store configuration parameters to local file or database
 
-The whole configuration parameters can be stored in a local file in JSON mode or uploaded to a remote server such as `mongodb`. You only need to get the corresponding JSON sequence of parameters through the `info = config.get_config()` command and then serialized with `json` library.
-
-For example, to store the `config_with_name` configuration to a local file:
+The entire parameter configuration can be stored to a local file or uploaded to a remote server such as mongodb, simply by `config.save()` storing the configuration as a `config name (or config if there is no name).json` file in the same directory, or you can specify the file name and path as follows:
 
 ```python
-with open("configuration.json", "w") as f:
-    configuration = config_with_name.get_config()
-    # Can print configuration directly
-    print(configuration) 
-    
-    # Store as json file
-    json.dump(configuration, f)
+config.save("config/test_config.json")
 ```
 
-Then we successfully save the configuration to the local `configuration.json` file. The file content is as follows:
+Then we successfully save the configuration to the local `configuration.json` file inside the `config` folder. The file content is as follows:
 
 ```json
 {
@@ -316,8 +311,32 @@ Then we successfully save the configuration to the local `configuration.json` fi
     "certificate_info": [1, [], [[2]]]
   }
 }
-
 ```
+
+To store it into the database such as `mongodb`, you need to get the json sequence first corresponding to the parameters with the `info = config.get_config()` command, and serialize it with the `json` library.
+
+The whole configuration parameters can be stored in a local file in JSON mode or uploaded to a remote server such as `mongodb`. You need to get the corresponding JSON sequence of parameters through the `info = config.get_config()` command and then insert it with corresponding insert command.
+
+For example, to store the `config_with_name` configuration to `mongodb`:
+
+```python
+import pymongo
+myclient = pymongo.MongoClient('mongodb://username:example.com:27017/', connect=False)
+mydb = myclient['exps']
+table = mydb["table"]
+# Get the configurations
+configuration = config.get_config()
+# Insert configuration dict into mongodb table
+table.insert_one(configuration)
+
+# Or make configuration as part of a bigger dict
+all_info = {
+  "exp_time":"20220925",
+  "configuration":configuration
+}
+table.insert_one(all_info)
+```
+
 ## Advanced options
 
 ### Restrict parameter input values to fixed enum types
@@ -399,7 +418,7 @@ helpers = {
 config = Config(preset_config, helpers=helpers)
 ```
 
-Note that since the `dbinfo` parameter is a `dict`, if you want to set the parameter description for `dbinfo`, you need to set a `dbinfo_help` dictionary to write the description in the `helpers` dictionary, i.e. add `_help` after the dict parameter name to set the parameter description for the dict field.
+Note that since the `dbinfo` parameter is a `dict`, if you want to set the parameter description for `dbinfo`, you need to set a `dbinfo_help` parameter to write the description in the `helpers` dictionary, i.e. add `_help` after the dict parameter name to set the parameter description for the dict field.
 
 #### Print parameter help
 

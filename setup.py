@@ -6,7 +6,7 @@ with open("README.md", "r",  encoding='UTF-8') as fh:
 
 setuptools.setup(
     name="commandline_config",
-    version="1.8.0",
+    version="1.9.0",
     author="Naibo Wang",
     author_email="naibowang@foxmail.com",
     description="A library for users to write (experiment in research) configurations in Python Dict or JSON format, while can read parameters from the command line",
