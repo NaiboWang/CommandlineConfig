@@ -59,14 +59,16 @@ class Config(dict):
         for c in self.preset_config:
             if c == "preset_config":  # Prevent Loop 防止套娃
                 continue
-            print(c)
+            # print(c)
             type = check_type(self.preset_config[c])
             if type == "dict":
                 if c in options:
                     option = options[c]
+                else:
+                    option = {}  
+                if c in helpers:
                     helper = helpers[c]
                 else:
-                    option = {}
                     helper = {}
                 self[c] = Config(self.preset_config[c],
                                  name="dict "+c, read_command_line=False, options=option, helpers=helper)
@@ -95,10 +97,17 @@ class Config(dict):
                 value = " ".join(value)
                 # print("origin key-value:", key, value, check_type(value))
                 if key.find(".") >= 0:
-                    main_key = key.split(".")[0]
-                    sub_key = key.split(".")[1]
+                    key_list = key.split(".")
+                    num_length = len(key_list)
+                    subdict = self
+                    for j in range(num_length-1):
+                        if j != num_length - 2:
+                            subdict = subdict[key_list[j]]
+                        else:
+                            subdict[key_list[j]].__setattr__(key_list[j+1], value)
+                        # print(j, key_list[j], subdict)
                     # print("----------", main_key, sub_key, value)
-                    self[main_key].__setattr__(sub_key, value)
+                    
                 else:
                     self.check_enum(key, value)
                     v = self.convert_type(value, key)
@@ -170,7 +179,7 @@ class Config(dict):
         if self.config_name == "config":
             print("\nConfigurations:")
         else:
-            print("\nConfigurations of %s: " % self.config_name)
+            print("\nConfigurations of \033[1;34m%s:\033[0m" % self.config_name)
         output = PrettyTable(["Key", "Type", "Value"])
         output.align["Value"] = 'l'
         output_json = deepcopy(self.preset_config)
@@ -202,7 +211,7 @@ class Config(dict):
         if self.config_name == "config":
             print("\nParameter helps:")
         else:
-            print("\nParameter helps for %s: " % self.config_name)
+            print("\nParameter helps for \033[1;34m%s: \033[0m" % self.config_name)
         output = PrettyTable(["Key", "Type", "Comments"])
         output.align["Value"] = 'l'
         output.align["Comments"] = 'l'

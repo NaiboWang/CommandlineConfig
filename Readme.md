@@ -41,10 +41,11 @@ Github URL: <https://github.com/NaiboWang/CommandlineConfig>
     - [Input value forced conversion](#input-value-forced-conversion)
     - [The list parameter needs to be assigned with a backslash before the string element quotes](#the-list-parameter-needs-to-be-assigned-with-a-backslash-before-the-string-element-quotes)
     - [Parameter naming convention](#parameter-naming-convention)
-    - [Nested objects currently support only one layer](#nested-objects-currently-support-only-one-layer)
+    - [Unlimited layer of nested objects](#unlimited-layer-of-nested-objects)
     - [Parameter integrity check, all parameters to be modified must be predefined](#parameter-integrity-check-all-parameters-to-be-modified-must-be-predefined)
     - [Special configurations in zsh environment](#special-configurations-in-zsh-environment)
   - [Full conversion example](#full-conversion-example)
+  - [Example Running Script](#example-running-script)
   - [Shattered thoughts](#shattered-thoughts)
   - [TODO](#todo)
 
@@ -88,7 +89,7 @@ There are two ways to install this library:
     from commandline_config import Config
     ```
 
-* 1. Set the parameter name and initial value in JSON/Python Dict format, and add the parameter description by `#` comment. Currently supports nesting a dict inside, but only one layer.
+* 1. Set the parameter name and initial value in JSON/Python Dict format, and add the parameter description by `#` comment. Currently supports nesting a dict inside another dict, and **can nest unlimited layers**.
 
     ```python
       preset_config = {
@@ -101,6 +102,9 @@ There are two ways to install this library:
           "username":"nus",
           "password":123456,
           "retry_interval_time":5.5,
+          "multi":{
+            "test":0.01, # Can nest to the 3th layer
+          },
           "save_password":False,
           "certificate_info":["1",2,[3.5]] 
         }
@@ -113,7 +117,7 @@ There are two ways to install this library:
 
   Similarly, The type and default value of the second to fifth parameter are string: `"mnist"; float:0.01; bool:True; list:[1,0.5,'test', "TEST"]`.
 
-  The sixth parameter is a nested dictionary of type dict, which also contains five parameters, with the same type and default values as the first five parameters, and will not be repeated here.
+  The sixth parameter is a nested dictionary of type dict, which also contains 6 parameters, with the same type and default values as the first 6 parameters, and will not be repeated here.
 
 * 2. Create a configuration class object by `preset_config` dict in any function you want.
 
@@ -160,6 +164,13 @@ There are two ways to install this library:
   |    save_password    |  bool | False           |
   |   certificate_info  |  list | ['1', 2, [3.5]] |
   +---------------------+-------+-----------------+
+  
+  Configurations of dict multi:
+  +------+-------+-------+
+  | Key  |  Type | Value |
+  +------+-------+-------+
+  | test | float | 15.0  |
+  +------+-------+-------+
   ```
 
   Here the information of all parameters will be printed in table format. If you want to change the printing style, you can modify it by `config_with_name.set_print_style(style='')`. The values that can be taken for `style` are: `both`, `table`, `json` which means print both table and json at the same time, print only table, and json dictionary only.
@@ -213,6 +224,15 @@ There are two ways to install this library:
   |   certificate_info  |  list | ['1', 2, [3.5]] |
   +---------------------+-------+-----------------+
   {'username': 'nus', 'password': 123456, 'retry_interval_time': 5.5, 'save_password': False, 'certificate_info': ['1', 2, [3.5]]}
+    
+  Configurations of dict multi:
+  +------+-------+-------+
+  | Key  |  Type | Value |
+  +------+-------+-------+
+  | test | float | 15.0  |
+  +------+-------+-------+
+  Configurations of dict multi:
+  {'test': 15.0}
   ```
 
 
@@ -226,11 +246,11 @@ Configuration parameter values can be written in three ways.
   
   * When passing bool type, you can use `0` or `False` for **False**, `1` or `True` or `no value after the parameter` for **True**: `--normalization 1` or `--normalization True` or `--normalization` all can set the value of parameter `normalization` in the configuration to **True**.
   * When passing list type, empty array and multi-dimensional arrays can be passed.
-  * To modify the value in the nested dict, please use `--nested-parameter-name.sub-parameter-name value` to modify the value in the nested object, such as `--dbinfo.password 987654` to change the value of the `password` parameter in the `dbinfo` subobject to `987654`. Currently this tool only supports one level of nesting.
+  * To modify the value in the nested dict, please use `--nested-parameter-name.sub-parameter-name.sub-parameter-name.….sub-parameter-name value` to modify the value in the nested object, such as `--dbinfo.password 987654` to change the value of the `password` parameter in the `dbinfo` subobject to `987654`; `--dbinfo.multi.test 1` to change the value of the `test` parameter in the `multi` dict which is in `dbinfo` subobject to ```. Currently this tool can supports unlimited layers/levels of nesting.
   * Note that **the argument index must be in the `preset_config` object defined above:**
   
   ```python
-    python test.py --index 0 --dataset emnist --normalization 0 --multi_information [\'sdf\',1,\"3.3\",,True,[1,[]]] --dbinfo.password 987654
+    python test.py --dbinfo.password 987654 --dbinfo.multi.test 1 --index 0 --dataset emnist --normalization 0 --multi_information [\'sdf\',1,\"3.3\",,True,[1,[]]] 
   ```
 
 * 2. Use `config.index = 2` directly in the code to change the value of the parameter `index` to `2`. Again, list type parameters can be assigned as empty or multidimensional arrays. For nested objects, you can use `config.dbinfo.save_password=True` to modify the value of the `save_password` parameter in sub dict `dbinfo` to `True`.
@@ -307,6 +327,9 @@ Then we successfully save the configuration to the local `configuration.json` fi
     "username": "test",
     "password": 1,
     "retry_interval_time": 22.0,
+    "multi":{
+      "test": 0.01
+    },
     "save_password": false,
     "certificate_info": [1, [], [[2]]]
   }
@@ -361,6 +384,11 @@ advanced_options = {
     "dbinfo": {
         "username": {
             "enum": ["XDU", "ZJU", "NUS"] # restrict the dbinfo.username field to XDU, ZJU and NUS
+        },
+        "multi":{
+            "test":{
+                "enum": [1,0.1, 0.01, 15] # 3 layers nested
+            }
         }
     },
 }
@@ -412,6 +440,9 @@ helpers = {
     "dbinfo_help": "information dict for database",
     "dbinfo": {
         "username": "username for database",
+        "multi":{
+            "test":"test information"
+        }
     }
 }
 
@@ -461,6 +492,13 @@ Parameter helps for dict dbinfo:
 |    save_password    |  bool | -                     |
 |   certificate_info  |  list | -                     |
 +---------------------+-------+-----------------------+
+
+Parameter helps for dict multi:
++------+-------+------------------+
+| Key  |  Type | Comments         |
++------+-------+------------------+
+| test | float | test information |
++------+-------+------------------+
 ```
 
 
@@ -490,8 +528,8 @@ That can correctly resolve the array parameter whose value is a `list`, and the 
 
 If the parameter name contains special characters such as `-+.` or `space` or `other python reserved characters`, you must use the `middle bracket []` to read and write the parameter value instead of **.** E.g., if the parameter name is `multi-information`, it can only be accessed by `config["multi-information"]`, cannot do `config.multi-information`, because the minus `sign -` is a python language's reserved symbol.
 
-### Nested objects currently support only one layer
-Only one layer of nested objects is supported for now, other supported parameter types are: `int, float, string, bool and list`.
+### Unlimited layer of nested objects
+Now the tool can support unlimited layers of nesting, other supported parameter types are: `int, float, string, bool and list`.
 
 ### Parameter integrity check, all parameters to be modified must be predefined
 The name of the parameter passed on the command line **must be defined in `preset_config` in advance, otherwise an error will be reported**, e.g.
@@ -608,6 +646,17 @@ if __name__ == '__main__':
     hello(options)
 ```
 
+## Example Running Script
+
+You can run `example.py` in the Github project to test the whole tool, most functions's codes had been provided inside the file:
+
+```shell
+# Get help for all parameters of example.py
+python example.py -h
+# Specify parameter values
+python example.py --dbinfo.multi.test 0.01 --dbinfo.username NUS
+```
+
 ## Shattered thoughts
 
 The following describes the author's personal reasons for developing and the benefits/conveniences of this package.
@@ -667,11 +716,10 @@ Similar tools including:
 |----------------|----------------|----------------------------------------------------------------------------------------------------------------------------------------|
 | Fire           | Can direct do conversion of function parameters to command line parameters | Cannot pass parameters to other functions.                                                                                                |
 | hydra          | Easy to read and write to yaml | Need additional yaml file with specifed path, also cannot perform integrity check and type conversion/check, not friendly for printing    |
-| ml_collections | Similar functionality to this tool with more configurable items | A little tideous to pass commandline parameters, and also without integrity check, not friendly for printing                              |
+| ml_collections | Similar functionality to this tool with more configurable items | A little tideous to pass commandline parameters, when nesting need to artificially set specifed Class, and also without integrity check, not friendly for printing                              |
 
 ## TODO
 
 **Welcome to submit issues to propose what functions you want to add to this tool and I will implement them when possible.** 
 
-* Implement multi-layer loop nesting function.
 * Advanced options to support more advanced features such as commandline style (instead of use --, can change to - or +), etc.

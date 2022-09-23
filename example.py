@@ -56,7 +56,10 @@ preset_config = {
         "password": 123456,
         "retry_interval_time": 5.5,
         "save_password": False,
-        "certificate_info": ["1", 2, [3.5]]
+        "multi":{
+            "test":0.01,
+        },
+        "certificate_info": ["1", 2, [3.5]],
     }
 }
 advanced_options = {
@@ -69,6 +72,11 @@ advanced_options = {
     "dbinfo": {
         "username": {
             "enum": ["XDU", "ZJU", "NUS"]  # 限制dbinfo.username字段只能输入XDU，ZJU和NUS
+        },
+        "multi":{
+            "test":{
+                "enum": [1,0.1, 0.01, 15]
+            }
         }
     },
 }
@@ -78,6 +86,10 @@ helpers = {
     "dbinfo_help": "information dict for database",
     "dbinfo": {
         "username": "username for database",
+        "multi_help": "Multiple Parameters",
+        "multi":{
+            "test":"test information"
+        }
     }
 }
 
@@ -86,6 +98,8 @@ config_with_name = Config(
 config_with_name.help()
 config_with_name.save("commandline_config/test.json")
 # config_with_name.index = "5.5"
+config_with_name.dbinfo.multi.test = 15
+print(config_with_name.dbinfo.multi.test)
 config_with_name.dataset = "[]"
 config_with_name.lr = "15.5"
 config_with_name.normalization = True

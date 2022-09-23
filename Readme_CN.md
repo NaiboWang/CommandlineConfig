@@ -30,11 +30,13 @@
     - [输入值会自动强制转换为默认值对应类型](#输入值会自动强制转换为默认值对应类型)
     - [list参数赋值时字符串元素引号前需加反斜线](#list参数赋值时字符串元素引号前需加反斜线)
     - [参数命名规范](#参数命名规范)
-    - [嵌套对象目前只支持一层](#嵌套对象目前只支持一层)
+    - [嵌套对象层数可无限](#嵌套对象层数可无限)
     - [参数完整性检查，所有要修改的参数必须预定义](#参数完整性检查所有要修改的参数必须预定义)
     - [ZSH环境特殊配置](#zsh环境特殊配置)
   - [完整转换示例](#完整转换示例)
-  - [碎碎念](#碎碎念)
+  - [运行脚本示例](#运行脚本示例)
+- [获取 example.py所有参数的帮助](#获取-examplepy所有参数的帮助)
+- [指定参数值](#指定参数值)
   - [待开发](#待开发)
 
 
@@ -77,7 +79,7 @@
     from commandline_config import Config
     ```
 
-* 1. 以JSON/Python Dict形式设定参数名称和初始值，并通过#注释方式添加参数描述。目前支持嵌套一层dict。
+* 1. 以JSON/Python Dict形式设定参数名称和初始值，并通过#注释方式添加参数描述。目前支持嵌套**无限层**dict。
 
     ```python
       preset_config = {
@@ -90,6 +92,9 @@
           "username":"nus",
           "password":123456,
           "retry_interval_time":5.5,
+          "multi":{
+            "test":0.01, # 三级嵌套
+          },
           "save_password":False,
           "certificate_info":["1",2,[3.5]] 
         }
@@ -102,7 +107,7 @@
 
   同理，第二至五个参数的的类型和默认值分别为string:"mnist"； float:0.01； bool:True； list:[1,0.5,'test',"TEST"]。
 
-  第六个参数是一个嵌套的字典，类型为dict，里面同样包含五个参数，类型和默认值和第一至五个参数同理，此处不再赘述。
+  第六个参数是一个嵌套的字典，类型为dict，里面同样包含六个参数，类型和默认值和第一至六个参数同理，此处不再赘述。
 
 * 2. 在任意函数中通过preset_config dict创建配置类对象。
 
@@ -149,6 +154,13 @@
   |    save_password    |  bool | False           |
   |   certificate_info  |  list | ['1', 2, [3.5]] |
   +---------------------+-------+-----------------+
+
+  Configurations of dict multi:
+  +------+-------+-------+
+  | Key  |  Type | Value |
+  +------+-------+-------+
+  | test | float | 15.0  |
+  +------+-------+-------+
   ```
 
   这里默认会以表格形式打印所有参数的信息，如想要改变打印方式，可通过`config_with_name.set_print_style(style='')`的方式修改，style可取的值有：`both`，`table`，`json`分别表示同时打印表格和json，只打印表格，只打印json字典。
@@ -202,6 +214,15 @@
   |   certificate_info  |  list | ['1', 2, [3.5]] |
   +---------------------+-------+-----------------+
   {'username': 'nus', 'password': 123456, 'retry_interval_time': 5.5, 'save_password': False, 'certificate_info': ['1', 2, [3.5]]}
+  
+  Configurations of dict multi:
+  +------+-------+-------+
+  | Key  |  Type | Value |
+  +------+-------+-------+
+  | test | float | 15.0  |
+  +------+-------+-------+
+  Configurations of dict multi:
+  {'test': 15.0}
   ```
 
 
@@ -215,11 +236,11 @@
 
   * 传递bool类型时，可使用0或False来表示False，使用1或True或参数后面不带任何值来表示True：即--normalization 1或--normalization True或--normalization都可以将配置中normalization的参数值设定为True.
   * 传递list类型时，可传递空数组及多维数组。
-  * 修改嵌套对象中的值，请使用"--嵌套参数名.子参数名 值"的方式修改嵌套对象中的值，如--dbinfo.password 987654即可将dbinfo子对象内的password参数值改为987654。注意，不可直接操作dbinfo本身，如--dbinfo {'password':987654}的写法是错误的。目前此工具只支持一层嵌套。
+  * 修改嵌套对象中的值，请使用"--嵌套参数名.子参数名.子参数名.….子参数名 值"的方式修改嵌套对象中的值，如--dbinfo.password 987654即可将dbinfo子对象内的password参数值改为987654，--dbinfo.multi.test 1即可将dbinfo子对象内的multi子对象内的test参数数值改为1。注意，不可直接操作dbinfo本身，如--dbinfo {'password':987654}的写法是错误的。目前此工具支持无限层嵌套。
   * 注意，**参数index必须在上面定义的preset_config对象中：**
   
   ```python
-    python test.py --index 0 --dataset emnist --normalization 0 --multi_information [\'sdf\',1,\"3.3\",,True,[1,[]]] --dbinfo.password 987654
+    python test.py --dbinfo.password 987654 --dbinfo.multi.test 1 --index 0 --dataset emnist --normalization 0 --multi_information [\'sdf\',1,\"3.3\",,True,[1,[]]] 
   ```
 
 * 2. 直接在代码中使用`config.index = 2`来修改参数index的值为2，同样，list类型参数可以赋值为为空或多维数组。对于嵌套对象，可使用`config.dbinfo.save_password=True`的方式修改dbinfo中save_password参数的值为True。
@@ -298,6 +319,9 @@ config.save("config/test_config.json")
     "username": "test",
     "password": 1,
     "retry_interval_time": 22.0,
+    "multi":{
+      "test": 0.01
+    },
     "save_password": false,
     "certificate_info": [1, [], [[2]]]
   }
@@ -352,6 +376,11 @@ advanced_options = {
     "dbinfo": {
         "username": {
             "enum": ["XDU", "ZJU", "NUS"] # 限制dbinfo.username字段只能输入XDU，ZJU和NUS
+        },
+        "multi":{
+            "test":{
+                "enum": [1,0.1, 0.01, 15] # 三级嵌套
+            }
         }
     },
 }
@@ -403,6 +432,9 @@ helpers = {
     "dbinfo_help": "information dict for database",
     "dbinfo": {
         "username": "username for database",
+         "multi":{
+            "test":"test information"
+        }
     }
 }
 
@@ -451,6 +483,13 @@ Parameter helps for dict dbinfo:
 |    save_password    |  bool | -                     |
 |   certificate_info  |  list | -                     |
 +---------------------+-------+-----------------------+
+
+Parameter helps for dict multi:
++------+-------+------------------+
+| Key  |  Type | Comments         |
++------+-------+------------------+
+| test | float | test information |
++------+-------+------------------+
 ```
 
 
@@ -484,8 +523,8 @@ python test.py --array [1,2.3,\'sdf\',\"msg\"]
 
 参数名称中如包含特殊字符如-+.空格等python保留字符，则必须使用中括号的方式读写参数值，不能使用.号，如参数名称为*multi-information*，则只能通过config["multi-information"]的方式访问，不能通过config.multi-information访问，因为减号为python语言保留名称。
 
-### 嵌套对象目前只支持一层
-目前暂只支持一层嵌套对象，其他支持的参数类型为：int, float, string, bool和list。
+### 嵌套对象层数可无限
+目前已支持嵌套无限层对象，其他支持的参数类型为：int, float, string, bool和list。
 
 ### 参数完整性检查，所有要修改的参数必须预定义
 命令行中传递的参数名称**必须提前在preset_config中定义，否则会报错**，如：
@@ -601,6 +640,16 @@ if __name__ == '__main__':
     options = Config(args)
     hello(options)
 ```
+## 运行脚本示例
+
+你可以运行Github项目中的`example.py`来测试整个工具，大部分功能的代码已经在文件中提供。
+
+``shell
+# 获取 example.py所有参数的帮助
+python example.py -h
+# 指定参数值
+python example.py --dbinfo.multi.test 0.01 --dbinfo.username NUS
+```
 
 ## 碎碎念
 
@@ -661,11 +710,8 @@ if __name__ == '__main__':
 |----------------|----------------|----------------------------------------------------------------------------------------------------------------------------------------|
 | Fire           | 函数参数直接转换为命令行参数 | 无法将参数传递给其它函数，无法嵌套输入                                                                                                                  |
 | hydra          | 读取写入yaml方便 | 需要设定额外的yaml文件且路径强制固定，同时无法进行代码完整性检查以及参数类型检查和强制转换，参数打印不够友好清晰。    |
-| ml_collections | 功能类似此工具且可配置项更多 | 传递命令行参数时书写麻烦，同样没有代码完整性检查以及参数类型检查和强制转换，参数打印不够友好清晰。                              |
+| ml_collections | 功能类似此工具且可配置项更多 | 传递命令行参数时书写麻烦，嵌套输入需要手动指定类，同样没有代码完整性检查以及参数类型检查和强制转换，参数打印不够友好清晰。                              |
 
 ## 待开发
 
-* 实现多层循环嵌套功能。
-* 高级配置功能以实现更多效果，如
-* 
-* 更改命令行输入方式等，欢迎提出issues。
+* 高级配置功能以实现更多效果，如更改命令行输入方式（从--到-或+）等，欢迎提出issues。
