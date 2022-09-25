@@ -308,7 +308,7 @@ copy_config.index=15
 
 #### Store configuration parameters to local file or database
 
-The entire parameter configuration can be stored to a local file or uploaded to a remote server such as mongodb, simply by `config.save()` storing the configuration as a `config name (or config if there is no name).json` file in the same directory, or you can specify the file name and path as follows:
+The entire parameter configuration can be stored to a local file or uploaded to a remote server such as mongodb, simply by `config.save()` storing the configuration as a `config name (or config if there is no name).json` file in the directory, or you can specify the file name and path as follows:
 
 ```python
 config.save("config/test_config.json")
@@ -338,8 +338,6 @@ Then we successfully save the configuration to the local `configuration.json` fi
 ```
 
 To store it into the database such as `mongodb`, you need to get the json sequence first corresponding to the parameters with the `info = config.get_config()` command, and serialize it with the `json` library.
-
-The whole configuration parameters can be stored in a local file in JSON mode or uploaded to a remote server such as `mongodb`. You need to get the corresponding JSON sequence of parameters through the `info = config.get_config()` command and then insert it with corresponding insert command.
 
 For example, to store the `config_with_name` configuration to `mongodb`:
 
@@ -491,6 +489,7 @@ Parameter helps for dict dbinfo:
 |       password      |  int  | -                     |
 | retry_interval_time | float | -                     |
 |    save_password    |  bool | -                     |
+|        multi        |  dict | Multiple Parameters   |
 |   certificate_info  |  list | -                     |
 +---------------------+-------+-----------------------+
 

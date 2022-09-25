@@ -300,7 +300,7 @@ copy_config.index=15
 
 整个参数配置可以json方式存储到本地文件中，或者上传到如mongodb的远程服务器：
 
-存储文件时，只需要通过`config.save()`将配置存储为同级目录的`配置名称（如无名称则为config）.json`文件，或可指定文件名和路径：
+存储文件时，只需要通过`config.save()`将配置存储为指定目录的`配置名称（如无名称则为config）.json`文件，或可指定文件名和路径：
 
 ```python
 config.save("config/test_config.json")
@@ -330,8 +330,6 @@ config.save("config/test_config.json")
 ```
 
 若想将配置信息存储到数据库中，如`mongodb`，你需要先用`info = config.get_config()`命令获得参数对应的json序列，然后用`json`库将其序列化。
-
-整个配置参数可以以JSON模式存储在本地文件中，或上传到远程服务器，如`mongodb`。你需要通过`info = config.get_config()`命令获得相应的JSON参数序列，然后用相应的插入命令插入。
 
 例如，要将`config_with_name`配置存储到`mongodb`：
 
@@ -482,8 +480,10 @@ Parameter helps for dict dbinfo:
 |       password      |  int  | -                     |
 | retry_interval_time | float | -                     |
 |    save_password    |  bool | -                     |
+|        multi        |  dict | Multiple Parameters   |
 |   certificate_info  |  list | -                     |
 +---------------------+-------+-----------------------+
+
 
 Parameter helps for dict multi:
 +------+-------+------------------+
@@ -511,8 +511,6 @@ Parameter helps for dict multi:
 
 如参数可设置为： 
 
-If the parameters can be set as follows:
-
 ```
 python test.py --array [1,2.3,\'sdf\',\"msg\"] 
 ```
@@ -522,7 +520,7 @@ python test.py --array [1,2.3,\'sdf\',\"msg\"]
 
 ### 参数命名规范
 
-参数名称中如包含特殊字符如-+.空格等python保留字符，则必须使用中括号的方式读写参数值，不能使用.号，如参数名称为*multi-information*，则只能通过config["multi-information"]的方式访问，不能通过config.multi-information访问，因为减号为python语言保留名称。
+参数名称中如包含特殊字符如-+.空格等python保留字符，则必须使用中括号的方式读写参数值，不能使用.号，如参数名称为*multi-information*，则只能通过config["multi-information"]的方式访问，不能通过config.multi-information访问，因为减号-为python语言保留名称。
 
 ### 嵌套对象层数可无限
 目前已支持嵌套无限层对象，其他支持的参数类型为：int, float, string, bool和list。
@@ -645,11 +643,11 @@ if __name__ == '__main__':
 
 你可以运行Github项目中的`example.py`来测试整个工具，大部分功能的代码已经在文件中提供。
 
-``shell
-# 获取 example.py所有参数的帮助
-python example.py -h
-# 指定参数值
-python example.py --dbinfo.multi.test 0.01 --dbinfo.username NUS
+```shell
+  # 获取 example.py所有参数的帮助
+  python example.py -h
+  # 指定参数值
+  python example.py --dbinfo.multi.test 0.01 --dbinfo.username NUS
 ```
 
 ## 碎碎念
