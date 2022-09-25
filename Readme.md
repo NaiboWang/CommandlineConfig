@@ -19,7 +19,7 @@ Github URL: <https://github.com/NaiboWang/CommandlineConfig>
 ## Simple Example
 
 ```python
-## Install via pip
+# Install via pip
 pip install commandline_config
 
 # import package
