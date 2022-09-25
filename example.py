@@ -139,7 +139,7 @@ print("----------")
 # copy_config.dbinfo.password=456456
 # print(copy_config, config_with_name)
 print(config_with_name.get_config())
-with open("configuration.json", "w") as f:
-    configuration = config_with_name.get_config()
-    print(configuration)
-    json.dump(configuration, f)
+# with open("config/configuration.json", "w") as f:
+#     configuration = config_with_name.get_config()
+#     print(configuration)
+#     json.dump(configuration, f)

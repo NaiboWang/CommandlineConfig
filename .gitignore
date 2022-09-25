@@ -2,3 +2,4 @@ build
 commandline_config.egg-info
 dist
 __pycache__
+commandline_config/test.json

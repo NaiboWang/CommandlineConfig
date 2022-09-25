@@ -40,13 +40,18 @@ c = Config(config)
 # Print the configuration of the parameters
 print(c)
 
-# The code reads and writes parameters directly via dot . and support multiple layers.
+# Read and write parameters directly via dot . and support multiple layers.
 c.index = 2
 c.dbinfo.username = "ZJU"
 print(c.index, c.dbinfo.username, c["lr"])
 
 # On the command line, modify the parameter values with --
 python example.py --index 3 --dbinfo.username XDU
+
+# Get the parameter descriptions via the help method in the code, or on the command line via -h or -help (customization required, see detailed documentation below for details)
+c.help()
+
+python example.py -h
 ```
 
 ## Catalogue

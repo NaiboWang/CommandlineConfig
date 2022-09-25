@@ -37,6 +37,11 @@ print(c.index, c.dbinfo.username, c["lr"])
 
 # 在命令行中，通过--修改参数值：
 python example.py --index 3 --dbinfo.username XDU
+
+# 代码中通过help方法，或命令行中通过-h或-help来获取参数说明（需要自定义，详情请看下面详细文档）
+c.help()
+
+python example.py -h
 ```
 
 ##  目录
