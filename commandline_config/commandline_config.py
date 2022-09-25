@@ -148,11 +148,11 @@ class Config(dict):
                 elif type == "dict":
                     print("\033[1;31mCannot directly parse the whole dict, please use . to spefic the value for the child elements of the dict. \nSuch as, use --nest.a 1 to set the value of 'a' inside dict 'nest' to 1.\n\033[0m")
                 elif type == "tuple":
-                    print(v)
+                    # print(v)
                     if v.find("(") >= 0:
                         if v.find('"') >= 0:
                             v = v.replace('"', "'")
-                        print('eval("%s")' % v)
+                        # print('eval("%s")' % v)
                         variable = eval('eval("%s")' % v)
                     else:
                         print("\033[1;31mCannot convert %s to type %s, make sure you have input a list start with ( and end with ).\n\033[0m" % (
@@ -272,7 +272,7 @@ class Config(dict):
             file_name = self.config_name.replace(" ", "_") + ".json"
 
         configuration = self.get_config()
-        print("---sdfsadf---", configuration)
+        # print("---sdfsadf---", configuration)
         with open(file_name, "w") as f:
             json.dump(configuration, f)
 
