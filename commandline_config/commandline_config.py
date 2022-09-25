@@ -1,9 +1,50 @@
 from copy import deepcopy
-import sys
+import sys, subprocess
+import threading
 import json
-from uuid import RESERVED_FUTURE
 from prettytable import PrettyTable
 
+
+class check_version(threading.Thread):
+  def run(self):
+    try:
+        output = subprocess.run(["pip", "index", "versions", "commandline_config"],
+                        capture_output=True)
+        output = output.stdout.decode('utf-8')
+        if output:
+            output = list(filter(lambda x: len(x) > 0, output.split('\n')))
+            vnew = output[-1].split(':')[1].strip()
+            vnow = output[-2].split(':')[1].strip()
+            if vnow != vnew:
+                print("""\n[notice] A new release of \033[1;33mcommandline_config\033[0m available: \033[1;31m%s\033[0m -> \033[1;32m%s\033[0m 
+[notice] To update, run: \033[1;32mpip install commandline_config --upgrade\033[0m
+[notice] And welcome to check the \033[1;32mnew features\033[0m via Github Documents: \033[1;32mhttps://github.com/NaiboWang/CommandlineConfig\033[0m
+            """ % (vnow, vnew))
+        else:
+            return None
+    except Exception as e:
+        print("\nCannot automatically check new version, please use the following command to check whether a new version avaliable and upgrade by pip: \n\033[1;32mpip index versions commandline_config\npip install commandline --upgrade\033[0m")
+
+
+def get_latest_version(package_name="commandline_config"):
+    try:
+        output = subprocess.run(["pip", "index", "versions", package_name],
+                        capture_output=True)
+        output = output.stdout.decode('utf-8')
+        if output:
+            output = list(filter(lambda x: len(x) > 0, output.split('\n')))
+            vnew = output[-1].split(':')[1].strip()
+            vnow = output[-2].split(':')[1].strip()
+            vnew, vnow = get_latest_version('commandline-config')
+            if vnow != vnew:
+                print("""[notice] A new release of \033[1;33mcommandline_config\033[0m available: \033[1;31m%s\033[0m -> \033[1;32m%s\033[0m 
+            [notice] To update, run: \033[1;32mpip install commandline --upgrade\033[0m
+            [notice] And welcome to check the \033[1;32mnew features\033[0m via Github Documents: \033[1;32mhttps://github.com/NaiboWang/CommandlineConfig\033[0m
+            """ % (vnow, vnew))
+        else:
+            return None
+    except Exception as e:
+        print(e)
 
 def check_type(v):
     if isinstance(v, bool):
@@ -46,7 +87,8 @@ class Config(dict):
 
     """
 
-    def __init__(self, preset_config, name="config", read_command_line=True, print_style='table', options={}, helpers={}):
+    def __init__(self, preset_config, name="config", read_command_line=True, print_style='table', options={}, helpers={}, show=True):
+        self.version_check(show)
         # self.preset_config = preset_config
         self.__setattr__("__options", options, True)
         self.__setattr__("__helpers", helpers, True)
@@ -71,7 +113,7 @@ class Config(dict):
                 else:
                     helper = {}
                 self[c] = Config(self.preset_config[c],
-                                 name="dict "+c, read_command_line=False, options=option, helpers=helper)
+                                 name="dict "+c, read_command_line=False, options=option, helpers=helper, show=False)
             else:
                 self.check_enum(c, self.preset_config[c])
                 self[c] = self.preset_config[c]
@@ -120,6 +162,12 @@ class Config(dict):
 
     # 把变量v按照preset_config里的相应key对应的值的类型转换为相应类型，用于命令行参数类型转换，同时保证了所有参数必须在preset_config中出现
     # 如preset_config里的random_seed为2022,是一个int类型，则命令行参数如果指定了--random_seed 2013,则会把2013由原始的字符串形式转换为int
+
+    def version_check(self, show=False):
+        # 版本检查
+        if show:
+            thread1 = check_version()
+            thread1.start()
 
     def convert_type(self, v, key):
         try:
