@@ -119,7 +119,7 @@ There are two ways to install this library:
 
   The sixth parameter is a nested dictionary of type dict, which also contains 6 parameters, with the same type and default values as the first 6 parameters, and will not be repeated here.
 
-* 2. Create a configuration class object by `preset_config` dict in any function you want.
+* 2. Create a configuration class object by passing `preset_config` dict to `Config` in any function you want.
 
     ```python
     if __name__ == '__main__':
