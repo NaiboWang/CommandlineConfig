@@ -155,7 +155,7 @@ class Config(dict):
                         # print('eval("%s")' % v)
                         variable = eval('eval("%s")' % v)
                     else:
-                        print("\033[1;31mCannot convert %s to type %s, make sure you have input a list start with ( and end with ).\n\033[0m" % (
+                        print("\033[1;31mCannot convert %s to type %s, make sure you have input a tuple start with ( and end with ).\n\033[0m" % (
                             str(v), type))
                 else:
                     variable = eval('eval("%s")' % v)
