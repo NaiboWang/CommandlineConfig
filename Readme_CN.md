@@ -6,9 +6,43 @@
 
 一个供用户以Python Dict或JSON格式编写（科研中实验）配置的库，同时可以从命令行中读取参数配置并修改参数值。
 
+## 简单示例
+
+```python
+# 通过pip安装
+pip install commandline_config
+
+# 导包
+from commandline_config import Config
+
+# 定义配置字典
+config = {
+  "index":1,
+  "lr": 0.1,
+  "dbinfo":{
+    "username":"NUS"
+  }
+}
+
+# 根据配置生成配置类
+c = Config(config)
+
+# 打印参数配置
+print(c)
+
+# 代码中通过点.直接读写参数，支持多层：
+c.index = 2
+c.dbinfo.username = "ZJU"
+print(c.index, c.dbinfo.username, c["lr"])
+
+# 在命令行中，通过--修改参数值：
+python example.py --index 3 --dbinfo.username XDU
+```
+
 ##  目录
 - [请您Star](#%E8%AF%B7%E6%82%A8star)
 - [简洁命令行配置工具](#%E7%AE%80%E6%B4%81%E5%91%BD%E4%BB%A4%E8%A1%8C%E9%85%8D%E7%BD%AE%E5%B7%A5%E5%85%B7)
+  - [简单示例](#%E7%AE%80%E5%8D%95%E7%A4%BA%E4%BE%8B)
   - [目录](#%E7%9B%AE%E5%BD%95)
   - [使用方式](#%E4%BD%BF%E7%94%A8%E6%96%B9%E5%BC%8F)
     - [请提出issue](#%E8%AF%B7%E6%8F%90%E5%87%BAissue)
@@ -28,7 +62,8 @@
   - [注意事项](#%E6%B3%A8%E6%84%8F%E4%BA%8B%E9%A1%B9)
     - [与Argparse冲突](#%E4%B8%8Eargparse%E5%86%B2%E7%AA%81)
     - [输入值会自动强制转换为默认值对应类型](#%E8%BE%93%E5%85%A5%E5%80%BC%E4%BC%9A%E8%87%AA%E5%8A%A8%E5%BC%BA%E5%88%B6%E8%BD%AC%E6%8D%A2%E4%B8%BA%E9%BB%98%E8%AE%A4%E5%80%BC%E5%AF%B9%E5%BA%94%E7%B1%BB%E5%9E%8B)
-    - [list参数赋值时字符串元素引号前需加反斜线](#list%E5%8F%82%E6%95%B0%E8%B5%8B%E5%80%BC%E6%97%B6%E5%AD%97%E7%AC%A6%E4%B8%B2%E5%85%83%E7%B4%A0%E5%BC%95%E5%8F%B7%E5%89%8D%E9%9C%80%E5%8A%A0%E5%8F%8D%E6%96%9C%E7%BA%BF)
+    - [list参数命令行赋值时字符串元素引号前需加反斜线](#list%E5%8F%82%E6%95%B0%E5%91%BD%E4%BB%A4%E8%A1%8C%E8%B5%8B%E5%80%BC%E6%97%B6%E5%AD%97%E7%AC%A6%E4%B8%B2%E5%85%83%E7%B4%A0%E5%BC%95%E5%8F%B7%E5%89%8D%E9%9C%80%E5%8A%A0%E5%8F%8D%E6%96%9C%E7%BA%BF)
+    - [tuple参数命令行赋值时需加引号，且字符串元素引号前需加反斜线](#tuple%E5%8F%82%E6%95%B0%E5%91%BD%E4%BB%A4%E8%A1%8C%E8%B5%8B%E5%80%BC%E6%97%B6%E9%9C%80%E5%8A%A0%E5%BC%95%E5%8F%B7%E4%B8%94%E5%AD%97%E7%AC%A6%E4%B8%B2%E5%85%83%E7%B4%A0%E5%BC%95%E5%8F%B7%E5%89%8D%E9%9C%80%E5%8A%A0%E5%8F%8D%E6%96%9C%E7%BA%BF)
     - [参数命名规范](#%E5%8F%82%E6%95%B0%E5%91%BD%E5%90%8D%E8%A7%84%E8%8C%83)
     - [嵌套对象层数可无限](#%E5%B5%8C%E5%A5%97%E5%AF%B9%E8%B1%A1%E5%B1%82%E6%95%B0%E5%8F%AF%E6%97%A0%E9%99%90)
     - [参数完整性检查，所有要修改的参数必须预定义](#%E5%8F%82%E6%95%B0%E5%AE%8C%E6%95%B4%E6%80%A7%E6%A3%80%E6%9F%A5%E6%89%80%E6%9C%89%E8%A6%81%E4%BF%AE%E6%94%B9%E7%9A%84%E5%8F%82%E6%95%B0%E5%BF%85%E9%A1%BB%E9%A2%84%E5%AE%9A%E4%B9%89)
@@ -37,7 +72,6 @@
   - [运行脚本示例](#%E8%BF%90%E8%A1%8C%E8%84%9A%E6%9C%AC%E7%A4%BA%E4%BE%8B)
   - [碎碎念](#%E7%A2%8E%E7%A2%8E%E5%BF%B5)
   - [待开发](#%E5%BE%85%E5%BC%80%E5%8F%91)
-
 
 ## 使用方式
 
@@ -80,32 +114,34 @@
 * 1. 以JSON/Python Dict形式设定参数名称和初始值，并通过#注释方式添加参数描述。目前支持嵌套**无限层**dict。
 
     ```python
-      preset_config = {
-        "index": 1, # Index of party
-        "dataset": "mnist",
-        'lr': 0.01, # learning rate 
-        'normalization': True,
-        "multi_information":[1,0.5,'test',"TEST"], # list
-        "dbinfo":{
-          "username":"nus",
-          "password":123456,
-          "retry_interval_time":5.5,
-          "multi":{
-            "test":0.01, # 三级嵌套
-          },
-          "save_password":False,
-          "certificate_info":["1",2,[3.5]] 
-        }
+    preset_config = {
+          "index": 1,  # Index of party
+          "dataset": "mnist",
+          'lr': 0.01,  # learning rate
+          'normalization': True,
+          "pair": (1,2),
+          "multi_information": [1, 0.5, 'test', "TEST"],  # list
+          "dbinfo": {
+              "username": "NUS",
+              "password": 123456,
+              "retry_interval_time": 5.5,
+              "save_password": False,
+              "pair": ("test",3),
+              "multi":{
+                  "test":0.01,
+              },
+              "certificate_info": ["1", 2, [3.5]],
+          }
       }
     ```
   
   即生成了程序的初始配置，在preset_config dict中定义的每一个key为参数名称，每一个value为参数的初始值，同时，参数的初始值类型会根据设置的值的类型自动检测。
 
-  如上方配置中包含六个参数：index， dataset， batch， normalization, multi_information和dbinfo， 其中参数**index**的类型会自动检测为**int**，默认值为**1**，描述为“Index of party”。
+  如上方配置中包含七个参数：index， dataset， batch， normalization, pair, multi_information和dbinfo， 其中参数**index**的类型会自动检测为**int**，默认值为**1**，描述为“Index of party”。
 
-  同理，第二至五个参数的的类型和默认值分别为string:"mnist"； float:0.01； bool:True； list:[1,0.5,'test',"TEST"]。
+  同理，第二至六个参数的的类型和默认值分别为string:"mnist"； float:0.01； bool:True；tuple:(1,2)； list:[1,0.5,'test',"TEST"]。
 
-  第六个参数是一个嵌套的字典，类型为dict，里面同样包含六个参数，类型和默认值和第一至六个参数同理，此处不再赘述。
+  第七个参数是一个嵌套的字典，类型为dict，里面同样包含七个参数，类型和默认值和第一至七个参数同理，此处不再赘述。
 
 * 2. 在任意函数中通过将preset_config传递给Config类来创建配置类对象。
 
@@ -130,7 +166,7 @@
   输出结果为：
   
   ```
-    Configurations of Federated Learning Experiments:
+  Configurations of Federated Learning Experiments:
   +-------------------+-------+--------------------------+
   |        Key        |  Type | Value                    |
   +-------------------+-------+--------------------------+
@@ -138,6 +174,7 @@
   |      dataset      |  str  | mnist                    |
   |         lr        | float | 0.01                     |
   |   normalization   |  bool | True                     |
+  |        pair       | tuple | (1, 2)                   |
   | multi_information |  list | [1, 0.5, 'test', 'TEST'] |
   |       dbinfo      |  dict | See sub table below      |
   +-------------------+-------+--------------------------+
@@ -149,9 +186,10 @@
   |       username      |  str  | NUS                 |
   |       password      |  int  | 123456              |
   | retry_interval_time | float | 5.5                 |
-  |        multi        |  dict | See sub table below |
   |    save_password    |  bool | False               |
-  |   certificate_info  |  list | [1, [], [[2]]]      |
+  |         pair        | tuple | ('test', 3)         |
+  |        multi        |  dict | See sub table below |
+  |   certificate_info  |  list | ['1', 2, [3.5]]     |
   +---------------------+-------+---------------------+
 
   Configurations of dict multi:
@@ -180,15 +218,16 @@
 
   ```
   Configurations of Federated Learning Experiments:
-  {'index': 1, 'dataset': 'mnist', 'lr': 0.01, 'normalization': True, 'multi_information': [1, 0.5, 'test', 'TEST'], 'dbinfo': 'See below'}
+  {'index': 1, 'dataset': 'mnist', 'lr': 0.01, 'normalization': True, 'pair': (1, 2), 'multi_information': [1, 0.5, 'test', 'TEST'], 'dbinfo': 'See below'}
 
   Configurations of dict dbinfo:
-  {'username': 'nus', 'password': 123456, 'retry_interval_time': 5.5, 'save_password': False, 'certificate_info': ['1', 2, [3.5]]}
+  {'username': 'NUS', 'password': 123456, 'retry_interval_time': 5.5, 'save_password': False, 'pair': ('test', 3), 'multi': 'See below', 'certificate_info': ['1', 2, [3.5]]}
 
+  Configurations of dict multi:
+  {'test': 0.01}
 
   ----------
-
-
+    
   Configurations of Federated Learning Experiments:
   +-------------------+-------+--------------------------+
   |        Key        |  Type | Value                    |
@@ -197,31 +236,33 @@
   |      dataset      |  str  | mnist                    |
   |         lr        | float | 0.01                     |
   |   normalization   |  bool | True                     |
+  |        pair       | tuple | (1, 2)                   |
   | multi_information |  list | [1, 0.5, 'test', 'TEST'] |
   |       dbinfo      |  dict | See sub table below      |
   +-------------------+-------+--------------------------+
-  {'index': 1, 'dataset': 'mnist', 'lr': 0.01, 'normalization': True, 'multi_information': [1, 0.5, 'test', 'TEST'], 'dbinfo': 'See below'}
+  {'index': 1, 'dataset': 'mnist', 'lr': 0.01, 'normalization': True, 'pair': (1, 2), 'multi_information': [1, 0.5, 'test', 'TEST'], 'dbinfo': 'See below'}
 
   Configurations of dict dbinfo:
-  +---------------------+-------+-----------------+
-  |         Key         |  Type | Value           |
-  +---------------------+-------+-----------------+
-  |       username      |  str  | nus             |
-  |       password      |  int  | 123456          |
-  | retry_interval_time | float | 5.5             |
-  |    save_password    |  bool | False           |
-  |   certificate_info  |  list | ['1', 2, [3.5]] |
-  +---------------------+-------+-----------------+
-  {'username': 'nus', 'password': 123456, 'retry_interval_time': 5.5, 'save_password': False, 'certificate_info': ['1', 2, [3.5]]}
-  
+  +---------------------+-------+---------------------+
+  |         Key         |  Type | Value               |
+  +---------------------+-------+---------------------+
+  |       username      |  str  | NUS                 |
+  |       password      |  int  | 123456              |
+  | retry_interval_time | float | 5.5                 |
+  |    save_password    |  bool | False               |
+  |         pair        | tuple | ('test', 3)         |
+  |        multi        |  dict | See sub table below |
+  |   certificate_info  |  list | ['1', 2, [3.5]]     |
+  +---------------------+-------+---------------------+
+  {'username': 'NUS', 'password': 123456, 'retry_interval_time': 5.5, 'save_password': False, 'pair': ('test', 3), 'multi': 'See below', 'certificate_info': ['1', 2, [3.5]]}
+
   Configurations of dict multi:
   +------+-------+-------+
   | Key  |  Type | Value |
   +------+-------+-------+
-  | test | float | 15.0  |
+  | test | float | 0.01  |
   +------+-------+-------+
-  Configurations of dict multi:
-  {'test': 15.0}
+  {'test': 0.01}
   ```
 
 
@@ -263,7 +304,7 @@ config.dbinfo.certificate_info = [1,[],[[2]]]
 print(config.dbinfo.certificate_info[2][0][0])
 ```
 
-对于嵌套对象中的参数，共有四种读取方式，均可读取到参数的值：
+对于单层嵌套对象中的参数，共有四种读取方式，均可读取到参数的值：
 
 ```
 print(config.dbinfo.username)
@@ -308,21 +349,20 @@ config.save("config/test_config.json")
 
 ```json
 {
-  "index": 5,
-  "dataset": "sdf",
-  "lr": 15.5,
+  "index": 1,
+  "dataset": "mnist",
+  "lr": 0.01,
   "normalization": true,
-  "msg_config": { "test": "ttt" },
-  "multi_information": [2, "sd", "sdfdsf"],
+  "pair": [1, 2],
+  "multi_information": [1, 0.5, "test", "TEST"],
   "dbinfo": {
-    "username": "test",
-    "password": 1,
-    "retry_interval_time": 22.0,
-    "multi":{
-      "test": 0.01
-    },
+    "username": "NUS",
+    "password": 123456,
+    "retry_interval_time": 5.5,
     "save_password": false,
-    "certificate_info": [1, [], [[2]]]
+    "pair": ["test", 3],
+    "multi": { "test": 0.01 },
+    "certificate_info": ["1", 2, [3.5]]
   }
 }
 ```
@@ -348,6 +388,8 @@ all_info = {
 }
 table.insert_one(all_info)
 ```
+
+需要注意的是，由于tuple类型不被JSON支持，因此，不论是本地文件还是存储到数据库，tuple类型的参数都会被转换为list存储。
 
 ## 高级配置
 
@@ -445,7 +487,7 @@ config = Config(preset_config, helpers=helpers)
 两种方式打印参数说明，命令行传递-h或-help，以及在代码中调用config.help()函数：
 
 ```python
-config.help()
+config_with_name.help()
 ```
 
 或
@@ -466,6 +508,7 @@ Parameter helps for Federated Learning Experiments:
 |      dataset      |  str  | -                             |
 |         lr        | float | -                             |
 |   normalization   |  bool | -                             |
+|        pair       | tuple | -                             |
 | multi_information |  list | -                             |
 |       dbinfo      |  dict | information dict for database |
 +-------------------+-------+-------------------------------+
@@ -478,10 +521,10 @@ Parameter helps for dict dbinfo:
 |       password      |  int  | -                     |
 | retry_interval_time | float | -                     |
 |    save_password    |  bool | -                     |
+|         pair        | tuple | -                     |
 |        multi        |  dict | Multiple Parameters   |
 |   certificate_info  |  list | -                     |
 +---------------------+-------+-----------------------+
-
 
 Parameter helps for dict multi:
 +------+-------+------------------+
@@ -503,7 +546,7 @@ Parameter helps for dict multi:
 无法转换的命令行参数将会报错，如命令行指定--index sdf，由于sdf字符串无法强制转换为int类型，因此会报错。
 
 
-### list参数赋值时字符串元素引号前需加反斜线
+### list参数命令行赋值时字符串元素引号前需加反斜线
 
 命令行参数设置为输入list类型时，如果list中元素是字符串，则必须在每个单/双引号前加入反斜线\以正确解析，否则参数值会被视作int或float类型。如果命令行中有空格会被自动合并（但命令行环境不能是zsh，如果是zsh环境则必须去除list内部所有的空格，bash和sh不存在此问题，即在zsh环境下，`--a [15,\'12\']`的15和\\'12\\'之间不得有空格）。
 
@@ -515,19 +558,32 @@ python test.py --array [1,2.3,\'sdf\',\"msg\"]
 
 即可正确解析array参数，其值为一个list，内容为[1,2.3,'sdf',"msg"],即一个包含int, float, string类型的list。
 
+### tuple参数命令行赋值时需加引号，且字符串元素引号前需加反斜线
+
+命令行参数设置为输入tuple类型时，需使用引号包含指定的tuple类型值；且如果tuple中元素是字符串，则必须在每个单/双引号前加入反斜线\以正确解析，否则参数值会被视作int或float类型。同样，如果命令行中有空格会被自动合并（但命令行环境不能是zsh，如果是zsh环境则必须去除内部所有的空格，bash和sh不存在此问题）。
+
+如参数可设置为： 
+
+```
+python test.py --pair "(1,2,\'msg\')"
+```
+
+即可正确解析pair参数，其值为一个tuple，内容为(1,2,"msg"),即一个包含int, float, string类型的tuple。
+
+
 
 ### 参数命名规范
 
 参数名称中如包含特殊字符如-+.空格等python保留字符，则必须使用中括号的方式读写参数值，不能使用.号，如参数名称为*multi-information*，则只能通过config["multi-information"]的方式访问，不能通过config.multi-information访问，因为减号-为python语言保留名称。
 
 ### 嵌套对象层数可无限
-目前已支持嵌套无限层对象，其他支持的参数类型为：int, float, string, bool和list。
+目前已支持嵌套无限层对象，其他支持的参数类型为：int, float, string, bool, tuple和list。
 
 ### 参数完整性检查，所有要修改的参数必须预定义
 命令行中传递的参数名称**必须提前在preset_config中定义，否则会报错**，如：
 
 ```python
-    python test.py --arg1 1
+python test.py --arg1 1
 ```
 
 由于参数名arg1没有在preset_config中定义，因此会报错，提示arg1参数未定义，设置此功能是为了进行参数完整性检查，从而避免通过命令行输入错误参数名。

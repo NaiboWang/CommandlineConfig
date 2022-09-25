@@ -16,10 +16,44 @@ A library for users to write (experiment in research) configurations in Python D
 
 Github URL: <https://github.com/NaiboWang/CommandlineConfig>
 
+## Simple Example
+
+```python
+## Install via pip
+pip install commandline_config
+
+# import package
+from commandline_config import Config
+
+# Define configuration dictionary
+config = {
+  "index":1,
+  "lr": 0.1,
+  "dbinfo":{
+    "username": "NUS"
+  }
+}
+
+# Generate configuration class based on configuration dict
+c = Config(config)
+
+# Print the configuration of the parameters
+print(c)
+
+# The code reads and writes parameters directly via dot . and support multiple layers.
+c.index = 2
+c.dbinfo.username = "ZJU"
+print(c.index, c.dbinfo.username, c["lr"])
+
+# On the command line, modify the parameter values with --
+python example.py --index 3 --dbinfo.username XDU
+```
+
 ## Catalogue
-- [请您Star Please Star](#%E8%AF%B7%E6%82%A8star-please-star)
-- [中文文档](#%E4%B8%AD%E6%96%87%E6%96%87%E6%A1%A3)
+- [请您Star Please Star](#请您star-please-star)
+- [中文文档](#中文文档)
 - [Easy-to-use Commandline Configuration Tool](#easy-to-use-commandline-configuration-tool)
+  - [Simple Example](#simple-example)
   - [Catalogue](#catalogue)
   - [Usage](#usage)
     - [Please submit issue](#please-submit-issue)
@@ -39,7 +73,8 @@ Github URL: <https://github.com/NaiboWang/CommandlineConfig>
   - [Things need attention](#things-need-attention)
     - [Conflict with Argparse](#conflict-with-argparse)
     - [Input value forced conversion](#input-value-forced-conversion)
-    - [The list parameter needs to be assigned with a backslash before the string element quotes](#the-list-parameter-needs-to-be-assigned-with-a-backslash-before-the-string-element-quotes)
+    - [The list parameter needs to be assigned with a backslash before the string element quotes when passing by commandline](#the-list-parameter-needs-to-be-assigned-with-a-backslash-before-the-string-element-quotes-when-passing-by-commandline)
+    - [Quotes are required for command-line assignment of tuple parameters, and string elements must be preceded by a backslash](#quotes-are-required-for-command-line-assignment-of-tuple-parameters-and-string-elements-must-be-preceded-by-a-backslash)
     - [Parameter naming convention](#parameter-naming-convention)
     - [Unlimited layer of nested objects](#unlimited-layer-of-nested-objects)
     - [Parameter integrity check, all parameters to be modified must be predefined](#parameter-integrity-check-all-parameters-to-be-modified-must-be-predefined)
@@ -48,6 +83,7 @@ Github URL: <https://github.com/NaiboWang/CommandlineConfig>
   - [Example Running Script](#example-running-script)
   - [Shattered thoughts](#shattered-thoughts)
   - [TODO](#todo)
+
 
 ## Usage
 
@@ -90,32 +126,34 @@ There are two ways to install this library:
 * 1. Set the parameter name and initial value in JSON/Python Dict format, and add the parameter description by `#` comment. Currently supports nesting a dict inside another dict, and **can nest unlimited layers**.
 
     ```python
-      preset_config = {
-        "index": 1, # Index of party
-        "dataset": "mnist",
-        'lr': 0.01, # learning rate 
-        'normalization': True,
-        "multi_information":[1,0.5,'test',"TEST"], # list
-        "dbinfo":{
-          "username":"nus",
-          "password":123456,
-          "retry_interval_time":5.5,
-          "multi":{
-            "test":0.01, # Can nest to the 3th layer
-          },
-          "save_password":False,
-          "certificate_info":["1",2,[3.5]] 
-        }
+    preset_config = {
+          "index": 1,  # Index of party
+          "dataset": "mnist",
+          'lr': 0.01,  # learning rate
+          'normalization': True,
+          "pair": (1,2),
+          "multi_information": [1, 0.5, 'test', "TEST"],  # list
+          "dbinfo": {
+              "username": "NUS",
+              "password": 123456,
+              "retry_interval_time": 5.5,
+              "save_password": False,
+              "pair": ("test",3),
+              "multi":{
+                  "test":0.01,
+              },
+              "certificate_info": ["1", 2, [3.5]],
+          }
       }
     ```
   
   That is, the initial configuration of the program is generated. Each key defined in `preset_config` dict is the parameter name and each value is the initial value of the parameter, and at the same time, the initial value type of the parameter is automatically detected according to the type of the set value.
 
-  The above configuration contains six parameters: `index, dataset, batch, normalization, multi_information and dbinfo`, where the type of the parameter **index** is automatically detected as **int**, the default value is **1** and the description is "Index of party".
+  The above configuration contains seven parameters: `index, dataset, batch, normalization, pair, multi_information and dbinfo`, where the type of the parameter **index** is automatically detected as **int**, the default value is **1** and the description is "Index of party".
 
-  Similarly, The type and default value of the second to fifth parameter are string: `"mnist"; float:0.01; bool:True; list:[1,0.5,'test', "TEST"]`.
+  Similarly, The type and default value of the second to fifth parameter are string: `"mnist"; float:0.01; bool:True; tuple:(1,2); list:[1,0.5,'test', "TEST"]`.
 
-  The sixth parameter is a nested dictionary of type dict, which also contains 6 parameters, with the same type and default values as the first 6 parameters, and will not be repeated here.
+  The seventh parameter is a nested dictionary of type dict, which also contains 7 parameters, with the same type and default values as the first 7 parameters, and will not be repeated here.
 
 * 2. Create a configuration class object by passing `preset_config` dict to `Config` in any function you want.
 
@@ -140,7 +178,7 @@ There are two ways to install this library:
   The output results are:
   
   ```
-    Configurations of Federated Learning Experiments:
+  Configurations of Federated Learning Experiments:
   +-------------------+-------+--------------------------+
   |        Key        |  Type | Value                    |
   +-------------------+-------+--------------------------+
@@ -148,6 +186,7 @@ There are two ways to install this library:
   |      dataset      |  str  | mnist                    |
   |         lr        | float | 0.01                     |
   |   normalization   |  bool | True                     |
+  |        pair       | tuple | (1, 2)                   |
   | multi_information |  list | [1, 0.5, 'test', 'TEST'] |
   |       dbinfo      |  dict | See sub table below      |
   +-------------------+-------+--------------------------+
@@ -159,9 +198,10 @@ There are two ways to install this library:
   |       username      |  str  | NUS                 |
   |       password      |  int  | 123456              |
   | retry_interval_time | float | 5.5                 |
-  |        multi        |  dict | See sub table below |
   |    save_password    |  bool | False               |
-  |   certificate_info  |  list | [1, [], [[2]]]      |
+  |         pair        | tuple | ('test', 3)         |
+  |        multi        |  dict | See sub table below |
+  |   certificate_info  |  list | ['1', 2, [3.5]]     |
   +---------------------+-------+---------------------+
   
   Configurations of dict multi:
@@ -190,15 +230,16 @@ There are two ways to install this library:
 
   ```
   Configurations of Federated Learning Experiments:
-  {'index': 1, 'dataset': 'mnist', 'lr': 0.01, 'normalization': True, 'multi_information': [1, 0.5, 'test', 'TEST'], 'dbinfo': 'See below'}
+  {'index': 1, 'dataset': 'mnist', 'lr': 0.01, 'normalization': True, 'pair': (1, 2), 'multi_information': [1, 0.5, 'test', 'TEST'], 'dbinfo': 'See below'}
 
   Configurations of dict dbinfo:
-  {'username': 'nus', 'password': 123456, 'retry_interval_time': 5.5, 'save_password': False, 'certificate_info': ['1', 2, [3.5]]}
+  {'username': 'NUS', 'password': 123456, 'retry_interval_time': 5.5, 'save_password': False, 'pair': ('test', 3), 'multi': 'See below', 'certificate_info': ['1', 2, [3.5]]}
 
+  Configurations of dict multi:
+  {'test': 0.01}
 
   ----------
-
-
+    
   Configurations of Federated Learning Experiments:
   +-------------------+-------+--------------------------+
   |        Key        |  Type | Value                    |
@@ -207,31 +248,33 @@ There are two ways to install this library:
   |      dataset      |  str  | mnist                    |
   |         lr        | float | 0.01                     |
   |   normalization   |  bool | True                     |
+  |        pair       | tuple | (1, 2)                   |
   | multi_information |  list | [1, 0.5, 'test', 'TEST'] |
   |       dbinfo      |  dict | See sub table below      |
   +-------------------+-------+--------------------------+
-  {'index': 1, 'dataset': 'mnist', 'lr': 0.01, 'normalization': True, 'multi_information': [1, 0.5, 'test', 'TEST'], 'dbinfo': 'See below'}
+  {'index': 1, 'dataset': 'mnist', 'lr': 0.01, 'normalization': True, 'pair': (1, 2), 'multi_information': [1, 0.5, 'test', 'TEST'], 'dbinfo': 'See below'}
 
   Configurations of dict dbinfo:
-  +---------------------+-------+-----------------+
-  |         Key         |  Type | Value           |
-  +---------------------+-------+-----------------+
-  |       username      |  str  | nus             |
-  |       password      |  int  | 123456          |
-  | retry_interval_time | float | 5.5             |
-  |    save_password    |  bool | False           |
-  |   certificate_info  |  list | ['1', 2, [3.5]] |
-  +---------------------+-------+-----------------+
-  {'username': 'nus', 'password': 123456, 'retry_interval_time': 5.5, 'save_password': False, 'certificate_info': ['1', 2, [3.5]]}
-    
+  +---------------------+-------+---------------------+
+  |         Key         |  Type | Value               |
+  +---------------------+-------+---------------------+
+  |       username      |  str  | NUS                 |
+  |       password      |  int  | 123456              |
+  | retry_interval_time | float | 5.5                 |
+  |    save_password    |  bool | False               |
+  |         pair        | tuple | ('test', 3)         |
+  |        multi        |  dict | See sub table below |
+  |   certificate_info  |  list | ['1', 2, [3.5]]     |
+  +---------------------+-------+---------------------+
+  {'username': 'NUS', 'password': 123456, 'retry_interval_time': 5.5, 'save_password': False, 'pair': ('test', 3), 'multi': 'See below', 'certificate_info': ['1', 2, [3.5]]}
+
   Configurations of dict multi:
   +------+-------+-------+
   | Key  |  Type | Value |
   +------+-------+-------+
-  | test | float | 15.0  |
+  | test | float | 0.01  |
   +------+-------+-------+
-  Configurations of dict multi:
-  {'test': 15.0}
+  {'test': 0.01}
   ```
 
 
@@ -273,7 +316,7 @@ config.dbinfo.certificate_info = [1,[],[[2]]]
 print(config.dbinfo.certificate_info[2][0][0])
 ```
 
-For parameters in nested objects, there are four ways to read the values of the parameters, all of which can be read successfully:
+For parameters in a single nested object, there are four ways to read the values of the parameters, all of which can be read successfully:
 
 ```
 print(config.dbinfo.username)
@@ -316,21 +359,20 @@ Then we successfully save the configuration to the local `configuration.json` fi
 
 ```json
 {
-  "index": 5,
-  "dataset": "sdf",
-  "lr": 15.5,
+  "index": 1,
+  "dataset": "mnist",
+  "lr": 0.01,
   "normalization": true,
-  "msg_config": { "test": "ttt" },
-  "multi_information": [2, "sd", "sdfdsf"],
+  "pair": [1, 2],
+  "multi_information": [1, 0.5, "test", "TEST"],
   "dbinfo": {
-    "username": "test",
-    "password": 1,
-    "retry_interval_time": 22.0,
-    "multi":{
-      "test": 0.01
-    },
+    "username": "NUS",
+    "password": 123456,
+    "retry_interval_time": 5.5,
     "save_password": false,
-    "certificate_info": [1, [], [[2]]]
+    "pair": ["test", 3],
+    "multi": { "test": 0.01 },
+    "certificate_info": ["1", 2, [3.5]]
   }
 }
 ```
@@ -356,6 +398,8 @@ all_info = {
 }
 table.insert_one(all_info)
 ```
+
+Note that tuples are not supported by JSON, so whether stored locally or in a database, tuple arguments will be converted to lists.
 
 ## Advanced options
 
@@ -453,7 +497,7 @@ Note that since the `dbinfo` parameter is a `dict`, if you want to set the param
 Two ways to print parameter descriptions, by passing `-h` or `-help` on the command line, or by calling the `help()` function in code.
 
 ```python
-config.help()
+config_with_name.help()
 ```
 
 or
@@ -475,6 +519,7 @@ Parameter helps for Federated Learning Experiments:
 |      dataset      |  str  | -                             |
 |         lr        | float | -                             |
 |   normalization   |  bool | -                             |
+|        pair       | tuple | -                             |
 | multi_information |  list | -                             |
 |       dbinfo      |  dict | information dict for database |
 +-------------------+-------+-------------------------------+
@@ -487,6 +532,7 @@ Parameter helps for dict dbinfo:
 |       password      |  int  | -                     |
 | retry_interval_time | float | -                     |
 |    save_password    |  bool | -                     |
+|         pair        | tuple | -                     |
 |        multi        |  dict | Multiple Parameters   |
 |   certificate_info  |  list | -                     |
 +---------------------+-------+-----------------------+
@@ -510,7 +556,7 @@ The type of the parameter will be automatically detected as the same type of the
 
 If the parameter value specified on the command line parameters can not be forcedly converted to specific type, it will report an error, such as if the command line specified `--index sdf`, as sdf with orignal format of `string` can not be converted to `int` type, so it will report an error.
 
-### The list parameter needs to be assigned with a backslash before the string element quotes 
+### The list parameter needs to be assigned with a backslash before the string element quotes when passing by commandline
 
 When the command line argument is set to the input `list` type, if the element in the list is a `string,` you must use add a `backslash \` before each `single/double quote` to parse it correctly, otherwise the argument value will be treated as an `int` or `float` type. If there are `spaces` in the command line they will be merged automatically (but the command line environment can not be `zsh`, if it is zsh environment then must remove all the spaces inside the list, `bash` and `sh` does not have this problem, that is, in the zsh environment, you cannot add any space(s) between `15` and `\'12\'` in `--a [15,\'12\']`).
 
@@ -522,18 +568,31 @@ If the parameters can be set as follows:
 
 That can correctly resolve the array parameter whose value is a `list`, and the content of `[1,2.3,'sdf', "qwe"]`, that is, a list containing int, float, string type of data simultaneously.
 
+### Quotes are required for command-line assignment of tuple parameters, and string elements must be preceded by a backslash
+
+When the command line parameter is set to the input `tuple` type, the specified tuple type value must be enclosed in `quotes`; and if the element in the tuple is a `string`, a `backslash` must be added before each single/double quote `\` for proper parsing, otherwise the parameter value will be treated as an `int` or `float` type. Similarly, if there are `spaces` in the command line they will be merged automatically (but the command line environment cannot be `zsh`, if it is zsh environment then all internal spaces must be removed, bash and sh do not have this problem).
+
+For example, the parameter can be set to 
+
+```
+python test.py --pair "(1,2,\'msg\')"
+```
+
+The value of the pair parameter is a tuple of type `(1,2, "msg")`, i.e. a tuple of type `int`, `float`, `string`.
+
+
 ### Parameter naming convention
 
 If the parameter name contains special characters such as `-+.` or `space` or `other python reserved characters`, you must use the `middle bracket []` to read and write the parameter value instead of **.** E.g., if the parameter name is `multi-information`, it can only be accessed by `config["multi-information"]`, cannot do `config.multi-information`, because the minus `sign -` is a python language's reserved symbol.
 
 ### Unlimited layer of nested objects
-Now the tool can support unlimited layers of nesting, other supported parameter types are: `int, float, string, bool and list`.
+Now the tool can support unlimited layers of nesting, other supported parameter types are: `int, float, string, bool, tuple and list`.
 
 ### Parameter integrity check, all parameters to be modified must be predefined
 The name of the parameter passed on the command line **must be defined in `preset_config` in advance, otherwise an error will be reported**, e.g.
 
   ```python
-    python test.py --arg1 1
+  python test.py --arg1 1
   ```
 
 Since the parameter name `arg1` is not defined in `preset_config` dict, an error is reported indicating that the `arg1` parameter is not defined. This function is set to perform parameter integrity checking to avoid entering incorrect parameter names through the command line.

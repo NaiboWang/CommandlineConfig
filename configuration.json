@@ -1,1 +1,1 @@
-{"index": 1, "dataset": "sdf", "lr": 15.5, "normalization": true, "multi_information": [2, "sd", "sdfdsf"], "dbinfo": {"username": "NUS", "password": 123456, "retry_interval_time": 22.0, "save_password": false, "multi": {"test": 15.0}, "certificate_info": [1, [], [[2]]]}}
+{"index": 1, "dataset": "sdf", "lr": 15.5, "normalization": true, "pair": [1, 2], "multi_information": [2, "sd", "sdfdsf"], "dbinfo": {"username": "NUS", "password": 123456, "retry_interval_time": 22.0, "save_password": false, "pair": [1, 2], "multi": {"test": 15.0}, "certificate_info": [1, [], [[2]]]}}

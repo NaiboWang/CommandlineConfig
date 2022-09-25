@@ -65,7 +65,7 @@ class Config(dict):
                 if c in options:
                     option = options[c]
                 else:
-                    option = {}  
+                    option = {}
                 if c in helpers:
                     helper = helpers[c]
                 else:
@@ -104,10 +104,11 @@ class Config(dict):
                         if j != num_length - 2:
                             subdict = subdict[key_list[j]]
                         else:
-                            subdict[key_list[j]].__setattr__(key_list[j+1], value)
+                            subdict[key_list[j]].__setattr__(
+                                key_list[j+1], value)
                         # print(j, key_list[j], subdict)
                     # print("----------", main_key, sub_key, value)
-                    
+
                 else:
                     self.check_enum(key, value)
                     v = self.convert_type(value, key)
@@ -146,6 +147,16 @@ class Config(dict):
                             str(v), type))
                 elif type == "dict":
                     print("\033[1;31mCannot directly parse the whole dict, please use . to spefic the value for the child elements of the dict. \nSuch as, use --nest.a 1 to set the value of 'a' inside dict 'nest' to 1.\n\033[0m")
+                elif type == "tuple":
+                    print(v)
+                    if v.find("(") >= 0:
+                        if v.find('"') >= 0:
+                            v = v.replace('"', "'")
+                        print('eval("%s")' % v)
+                        variable = eval('eval("%s")' % v)
+                    else:
+                        print("\033[1;31mCannot convert %s to type %s, make sure you have input a list start with ( and end with ).\n\033[0m" % (
+                            str(v), type))
                 else:
                     variable = eval('eval("%s")' % v)
             else:
@@ -179,7 +190,8 @@ class Config(dict):
         if self.config_name == "config":
             print("\nConfigurations:")
         else:
-            print("\nConfigurations of \033[1;34m%s:\033[0m" % self.config_name)
+            print(
+                "\nConfigurations of \033[1;34m%s:\033[0m" % self.config_name)
         output = PrettyTable(["Key", "Type", "Value"])
         output.align["Value"] = 'l'
         output_json = deepcopy(self.preset_config)
@@ -211,7 +223,8 @@ class Config(dict):
         if self.config_name == "config":
             print("\nParameter helps:")
         else:
-            print("\nParameter helps for \033[1;34m%s: \033[0m" % self.config_name)
+            print(
+                "\nParameter helps for \033[1;34m%s: \033[0m" % self.config_name)
         output = PrettyTable(["Key", "Type", "Comments"])
         output.align["Value"] = 'l'
         output.align["Comments"] = 'l'
@@ -251,6 +264,7 @@ class Config(dict):
                 output[key] = self[key].get_config()
             else:
                 output[key] = self[key]
+                # print("-----------", key, type, self[key])
         return output
 
     def save(self, file_name=None):
@@ -258,6 +272,7 @@ class Config(dict):
             file_name = self.config_name.replace(" ", "_") + ".json"
 
         configuration = self.get_config()
+        print("---sdfsadf---", configuration)
         with open(file_name, "w") as f:
             json.dump(configuration, f)
 
