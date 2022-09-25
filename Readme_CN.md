@@ -145,21 +145,22 @@
   +-------------------+-------+--------------------------+
 
   Configurations of dict dbinfo:
-  +---------------------+-------+-----------------+
-  |         Key         |  Type | Value           |
-  +---------------------+-------+-----------------+
-  |       username      |  str  | nus             |
-  |       password      |  int  | 123456          |
-  | retry_interval_time | float | 5.5             |
-  |    save_password    |  bool | False           |
-  |   certificate_info  |  list | ['1', 2, [3.5]] |
-  +---------------------+-------+-----------------+
+  +---------------------+-------+---------------------+
+  |         Key         |  Type | Value               |
+  +---------------------+-------+---------------------+
+  |       username      |  str  | NUS                 |
+  |       password      |  int  | 123456              |
+  | retry_interval_time | float | 5.5                 |
+  |        multi        |  dict | See sub table below |
+  |    save_password    |  bool | False               |
+  |   certificate_info  |  list | [1, [], [[2]]]      |
+  +---------------------+-------+---------------------+
 
   Configurations of dict multi:
   +------+-------+-------+
   | Key  |  Type | Value |
   +------+-------+-------+
-  | test | float | 15.0  |
+  | test | float | 0.01  |
   +------+-------+-------+
   ```
 
