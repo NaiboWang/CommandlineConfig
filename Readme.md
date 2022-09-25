@@ -16,6 +16,17 @@ A library for users to write (experiment in research) configurations in Python D
 
 Github URL: <https://github.com/NaiboWang/CommandlineConfig>
 
+## New Features
+
+### v2.2.*
+* Support infinite level nesting of parameters in dictionary
+* Automatic version checking
+* Support parameter value constrained to specified value (enumeration)
+* Support for tuple type
+* Support reading configuration from local JSON file
+* Support for setting parameter help and printing parameter descriptions via command line `-h`
+* Documentation updates, provide simple example
+
 ## Simple Example
 
 ```python
