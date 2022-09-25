@@ -1,3 +1,41 @@
+<!-- START doctoc generated TOC please keep comment here to allow auto update -->
+<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
+**Table of Contents**  *generated with [DocToc](https://github.com/thlorenz/doctoc)*
+
+- [请您Star Please Star](#%E8%AF%B7%E6%82%A8star-please-star)
+- [中文文档](#%E4%B8%AD%E6%96%87%E6%96%87%E6%A1%A3)
+- [Easy-to-use Commandline Configuration Tool](#easy-to-use-commandline-configuration-tool)
+  - [Catalogue](#catalogue)
+  - [Usage](#usage)
+    - [Please submit issue](#please-submit-issue)
+    - [Installation](#installation)
+    - [Configuration Way](#configuration-way)
+    - [Configuration parameters read and write method](#configuration-parameters-read-and-write-method)
+      - [Write method](#write-method)
+      - [Reading method](#reading-method)
+      - [Pass configuration to functions](#pass-configuration-to-functions)
+      - [Copy configuration](#copy-configuration)
+      - [Store configuration parameters to local file or database](#store-configuration-parameters-to-local-file-or-database)
+  - [Advanced options](#advanced-options)
+    - [Restrict parameter input values to fixed enum types](#restrict-parameter-input-values-to-fixed-enum-types)
+    - [Print parameter help descriptions](#print-parameter-help-descriptions)
+      - [Set parameter descriptions](#set-parameter-descriptions)
+      - [Print parameter help](#print-parameter-help)
+  - [Things need attention](#things-need-attention)
+    - [Conflict with Argparse](#conflict-with-argparse)
+    - [Input value forced conversion](#input-value-forced-conversion)
+    - [The list parameter needs to be assigned with a backslash before the string element quotes](#the-list-parameter-needs-to-be-assigned-with-a-backslash-before-the-string-element-quotes)
+    - [Parameter naming convention](#parameter-naming-convention)
+    - [Unlimited layer of nested objects](#unlimited-layer-of-nested-objects)
+    - [Parameter integrity check, all parameters to be modified must be predefined](#parameter-integrity-check-all-parameters-to-be-modified-must-be-predefined)
+    - [Special configurations in zsh environment](#special-configurations-in-zsh-environment)
+  - [Full conversion example](#full-conversion-example)
+  - [Example Running Script](#example-running-script)
+  - [Shattered thoughts](#shattered-thoughts)
+  - [TODO](#todo)
+
+<!-- END doctoc generated TOC please keep comment here to allow auto update -->
+
 # 请您Star Please Star
 
 如果你觉得此工具不错，请轻轻点击此页面右上角**Star**按钮增加项目曝光度，谢谢！

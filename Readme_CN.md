@@ -1,3 +1,40 @@
+<!-- START doctoc generated TOC please keep comment here to allow auto update -->
+<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
+**Table of Contents**  *generated with [DocToc](https://github.com/thlorenz/doctoc)*
+
+- [请您Star](#%E8%AF%B7%E6%82%A8star)
+- [简洁命令行配置工具](#%E7%AE%80%E6%B4%81%E5%91%BD%E4%BB%A4%E8%A1%8C%E9%85%8D%E7%BD%AE%E5%B7%A5%E5%85%B7)
+  - [目录](#%E7%9B%AE%E5%BD%95)
+  - [使用方式](#%E4%BD%BF%E7%94%A8%E6%96%B9%E5%BC%8F)
+    - [请提出issue](#%E8%AF%B7%E6%8F%90%E5%87%BAissue)
+    - [安装方法](#%E5%AE%89%E8%A3%85%E6%96%B9%E6%B3%95)
+    - [配置方式](#%E9%85%8D%E7%BD%AE%E6%96%B9%E5%BC%8F)
+    - [配置参数读写方式](#%E9%85%8D%E7%BD%AE%E5%8F%82%E6%95%B0%E8%AF%BB%E5%86%99%E6%96%B9%E5%BC%8F)
+      - [写入方式](#%E5%86%99%E5%85%A5%E6%96%B9%E5%BC%8F)
+      - [读取方式](#%E8%AF%BB%E5%8F%96%E6%96%B9%E5%BC%8F)
+      - [传递配置给函数](#%E4%BC%A0%E9%80%92%E9%85%8D%E7%BD%AE%E7%BB%99%E5%87%BD%E6%95%B0)
+      - [拷贝配置](#%E6%8B%B7%E8%B4%9D%E9%85%8D%E7%BD%AE)
+      - [配置参数存储至本地或数据库](#%E9%85%8D%E7%BD%AE%E5%8F%82%E6%95%B0%E5%AD%98%E5%82%A8%E8%87%B3%E6%9C%AC%E5%9C%B0%E6%88%96%E6%95%B0%E6%8D%AE%E5%BA%93)
+  - [高级配置](#%E9%AB%98%E7%BA%A7%E9%85%8D%E7%BD%AE)
+    - [限制参数输入值为固定枚举类型](#%E9%99%90%E5%88%B6%E5%8F%82%E6%95%B0%E8%BE%93%E5%85%A5%E5%80%BC%E4%B8%BA%E5%9B%BA%E5%AE%9A%E6%9E%9A%E4%B8%BE%E7%B1%BB%E5%9E%8B)
+    - [打印参数帮助说明](#%E6%89%93%E5%8D%B0%E5%8F%82%E6%95%B0%E5%B8%AE%E5%8A%A9%E8%AF%B4%E6%98%8E)
+      - [设置参数说明](#%E8%AE%BE%E7%BD%AE%E5%8F%82%E6%95%B0%E8%AF%B4%E6%98%8E)
+      - [打印参数帮助](#%E6%89%93%E5%8D%B0%E5%8F%82%E6%95%B0%E5%B8%AE%E5%8A%A9)
+  - [注意事项](#%E6%B3%A8%E6%84%8F%E4%BA%8B%E9%A1%B9)
+    - [与Argparse冲突](#%E4%B8%8Eargparse%E5%86%B2%E7%AA%81)
+    - [输入值会自动强制转换为默认值对应类型](#%E8%BE%93%E5%85%A5%E5%80%BC%E4%BC%9A%E8%87%AA%E5%8A%A8%E5%BC%BA%E5%88%B6%E8%BD%AC%E6%8D%A2%E4%B8%BA%E9%BB%98%E8%AE%A4%E5%80%BC%E5%AF%B9%E5%BA%94%E7%B1%BB%E5%9E%8B)
+    - [list参数赋值时字符串元素引号前需加反斜线](#list%E5%8F%82%E6%95%B0%E8%B5%8B%E5%80%BC%E6%97%B6%E5%AD%97%E7%AC%A6%E4%B8%B2%E5%85%83%E7%B4%A0%E5%BC%95%E5%8F%B7%E5%89%8D%E9%9C%80%E5%8A%A0%E5%8F%8D%E6%96%9C%E7%BA%BF)
+    - [参数命名规范](#%E5%8F%82%E6%95%B0%E5%91%BD%E5%90%8D%E8%A7%84%E8%8C%83)
+    - [嵌套对象层数可无限](#%E5%B5%8C%E5%A5%97%E5%AF%B9%E8%B1%A1%E5%B1%82%E6%95%B0%E5%8F%AF%E6%97%A0%E9%99%90)
+    - [参数完整性检查，所有要修改的参数必须预定义](#%E5%8F%82%E6%95%B0%E5%AE%8C%E6%95%B4%E6%80%A7%E6%A3%80%E6%9F%A5%E6%89%80%E6%9C%89%E8%A6%81%E4%BF%AE%E6%94%B9%E7%9A%84%E5%8F%82%E6%95%B0%E5%BF%85%E9%A1%BB%E9%A2%84%E5%AE%9A%E4%B9%89)
+    - [ZSH环境特殊配置](#zsh%E7%8E%AF%E5%A2%83%E7%89%B9%E6%AE%8A%E9%85%8D%E7%BD%AE)
+  - [完整转换示例](#%E5%AE%8C%E6%95%B4%E8%BD%AC%E6%8D%A2%E7%A4%BA%E4%BE%8B)
+  - [运行脚本示例](#%E8%BF%90%E8%A1%8C%E8%84%9A%E6%9C%AC%E7%A4%BA%E4%BE%8B)
+  - [碎碎念](#%E7%A2%8E%E7%A2%8E%E5%BF%B5)
+  - [待开发](#%E5%BE%85%E5%BC%80%E5%8F%91)
+
+<!-- END doctoc generated TOC please keep comment here to allow auto update -->
+
 # 请您Star
 
 如果你觉得此工具不错，请轻轻点击此页面右上角**Star**按钮增加项目曝光度，谢谢！
@@ -35,7 +72,6 @@
     - [ZSH环境特殊配置](#zsh环境特殊配置)
   - [完整转换示例](#完整转换示例)
   - [运行脚本示例](#运行脚本示例)
-- [获取 example.py所有参数的帮助](#获取-examplepy所有参数的帮助)
 - [指定参数值](#指定参数值)
   - [待开发](#待开发)
 
