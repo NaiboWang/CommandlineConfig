@@ -124,7 +124,13 @@ There are two ways to install this library:
   ```shell
     pip install commandline_config --upgrade
   ```
-
+  
+  Or install via `requirements.txt`:
+  
+  ```shell
+    pip install -r requirements.txt
+  ```
+  
 * 2. Import the commandline_config.py file directly from the `/commandline_config` folder of the github project into your own project directory, you need to install the dependency package `prettytable`:
 
     ```shell
