@@ -118,6 +118,12 @@ python example.py -h
     ```shell
     pip install prettytable
     ```
+    
+    或通过requirements.txt安装：
+    
+    ```shell
+    pip install -r requirements.txt
+    ```
   
 ### 配置方式
 
