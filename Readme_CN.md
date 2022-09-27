@@ -104,13 +104,13 @@ python example.py -h
 * 1. 通过pip安装：
 
   ```shell
-    pip install commandline_config
+  pip install commandline_config
   ```
   
   已安装的可通过以下命令升级：
   
   ```shell
-    pip install commandline_config --upgrade
+  pip install commandline_config --upgrade
   ```
 
 * 2. 直接导入github项目中/commandline_config文件夹下的commandline_config.py文件到自己的项目目录中即可，需要安装依赖包prettytable:
@@ -182,7 +182,7 @@ python example.py -h
 * 3. 可通过print直接打印参数配置：
   
   ```python
-    print(config_with_name)
+  print(config_with_name)
   ```
 
   输出结果为：
@@ -227,13 +227,13 @@ python example.py -h
   如：
 
   ```python
-    # 只打印json
-    config_with_name.set_print_style('json')
-    print(config_with_name)
-    print("----------")
-    # 同时打印表格和json
-    config_with_name.set_print_style('table')
-    print(config_with_name)
+  # 只打印json
+  config_with_name.set_print_style('json')
+  print(config_with_name)
+  print("----------")
+  # 同时打印表格和json
+  config_with_name.set_print_style('table')
+  print(config_with_name)
   ```
 
   输出结果为：
@@ -302,7 +302,7 @@ python example.py -h
   * 注意，**参数index必须在上面定义的preset_config对象中：**
   
   ```python
-    python test.py --dbinfo.password 987654 --dbinfo.multi.test 1 --index 0 --dataset emnist --normalization 0 --multi_information [\'sdf\',1,\"3.3\",,True,[1,[]]] 
+  python test.py --dbinfo.password 987654 --dbinfo.multi.test 1 --index 0 --dataset emnist --normalization 0 --multi_information [\'sdf\',1,\"3.3\",,True,[1,[]]] 
   ```
 
 * 2. 直接在代码中使用`config.index = 2`来修改参数index的值为2，同样，list类型参数可以赋值为为空或多维数组。对于嵌套对象，可使用`config.dbinfo.save_password=True`的方式修改dbinfo中save_password参数的值为True。
@@ -719,11 +719,11 @@ if __name__ == '__main__':
 
 你可以运行Github项目中的`example.py`来测试整个工具，大部分功能的代码已经在文件中提供。
 
-```shell
-  # 获取 example.py所有参数的帮助
-  python example.py -h
-  # 指定参数值
-  python example.py --dbinfo.multi.test 0.01 --dbinfo.username NUS
+```
+# 获取 example.py所有参数的帮助
+python example.py -h
+# 指定参数值
+python example.py --dbinfo.multi.test 0.01 --dbinfo.username NUS
 ```
 
 ## 碎碎念

@@ -69,6 +69,8 @@ python example.py -h
 - [请您Star Please Star](#请您star-please-star)
 - [中文文档](#中文文档)
 - [Easy-to-use Commandline Configuration Tool](#easy-to-use-commandline-configuration-tool)
+  - [New Features](#new-features)
+    - [v2.2.*](#v22)
   - [Simple Example](#simple-example)
   - [Catalogue](#catalogue)
   - [Usage](#usage)
@@ -116,25 +118,25 @@ There are two ways to install this library:
   
 * 1. Install via pip:
   ```shell
-    pip install commandline_config
+  pip install commandline_config
   ```
   
   If already installed, you can upgrade it by the following command:
 
   ```shell
-    pip install commandline_config --upgrade
-  ```
-  
-  Or install via `requirements.txt`:
-  
-  ```shell
-    pip install -r requirements.txt
+  pip install commandline_config --upgrade
   ```
   
 * 2. Import the commandline_config.py file directly from the `/commandline_config` folder of the github project into your own project directory, you need to install the dependency package `prettytable`:
 
     ```shell
     pip install prettytable
+    ```
+
+    Or install via `requirements.txt`:
+  
+    ```shell
+    pip install -r requirements.txt
     ```
   
 ### Configuration Way
@@ -194,7 +196,7 @@ There are two ways to install this library:
 * 3. Configuration of parameters can be printed directly via `print` function:
 
   ```python
-    print(config_with_name)
+  print(config_with_name)
   ```
 
   The output results are:
@@ -239,13 +241,13 @@ There are two ways to install this library:
   E.g.:
 
   ```python
-    # Only print json 
-    config_with_name.set_print_style('json')
-    print(config_with_name)
-    print("----------")
-    # Print table and json at the same time
-    config_with_name.set_print_style('table')
-    print(config_with_name)
+  # Only print json 
+  config_with_name.set_print_style('json')
+  print(config_with_name)
+  print("----------")
+  # Print table and json at the same time
+  config_with_name.set_print_style('table')
+  print(config_with_name)
   ```
 
   The output results are:
@@ -314,7 +316,7 @@ Configuration parameter values can be written in three ways.
   * Note that **the argument index must be in the `preset_config` object defined above:**
   
   ```python
-    python test.py --dbinfo.password 987654 --dbinfo.multi.test 1 --index 0 --dataset emnist --normalization 0 --multi_information [\'sdf\',1,\"3.3\",,True,[1,[]]] 
+  python test.py --dbinfo.password 987654 --dbinfo.multi.test 1 --index 0 --dataset emnist --normalization 0 --multi_information [\'sdf\',1,\"3.3\",,True,[1,[]]] 
   ```
 
 * 2. Use `config.index = 2` directly in the code to change the value of the parameter `index` to `2`. Again, list type parameters can be assigned as empty or multidimensional arrays. For nested objects, you can use `config.dbinfo.save_password=True` to modify the value of the `save_password` parameter in sub dict `dbinfo` to `True`.
@@ -729,7 +731,7 @@ if __name__ == '__main__':
 
 You can run `example.py` in the Github project to test the whole tool, most functions's codes had been provided inside the file:
 
-```shell
+```
 # Get help for all parameters of example.py
 python example.py -h
 # Specify parameter values
