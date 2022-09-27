@@ -1,29 +1,33 @@
 from copy import deepcopy
-import sys, subprocess
+import sys
+import subprocess
 import threading
 import json
 from prettytable import PrettyTable
 
 
 class check_version(threading.Thread):
-  def run(self):
-    try:
-        output = subprocess.run(["pip", "index", "versions", "commandline_config"],
-                        capture_output=True)
-        output = output.stdout.decode('utf-8')
-        if output:
-            output = list(filter(lambda x: len(x) > 0, output.split('\n')))
-            vnew = output[-1].split(':')[1].strip()
-            vnow = output[-2].split(':')[1].strip()
-            if vnow != vnew:
-                print("""\n[notice] A new release of \033[1;33mcommandline_config\033[0m available: \033[1;31m%s\033[0m -> \033[1;32m%s\033[0m 
+    def run(self):
+        try:
+            output = subprocess.run(["pip", "index", "versions", "commandline_config"],
+                                    capture_output=True)
+            output = output.stdout.decode('utf-8')
+            if output:
+                output = list(filter(lambda x: len(x) > 0, output.split('\n')))
+                vnew = output[-1].split(':')[1].strip().split(".")[:-1]
+                vnow = output[-2].split(':')[1].strip().split(".")[:-1]
+                # print(vnew, vnow)
+                if vnow != vnew:
+                    print("""\n[notice] A new release of \033[1;33mcommandline_config\033[0m available: \033[1;31m%s\033[0m -> \033[1;32m%s\033[0m 
 [notice] To update, run: \033[1;32mpip install commandline_config --upgrade\033[0m
 [notice] And welcome to check the \033[1;32mnew features\033[0m via Github Documents: \033[1;32mhttps://github.com/NaiboWang/CommandlineConfig\033[0m
             """ % (vnow, vnew))
-        else:
-            return None
-    except Exception as e:
-        print("\nCannot automatically check new version, please use the following command to check whether a new version avaliable and upgrade by pip: \n\033[1;32mpip index versions commandline_config\npip install commandline --upgrade\033[0m")
+            else:
+                return None
+        except Exception as e:
+            print(
+                "\nCannot automatically check new version, please use the following command to check whether a new version avaliable and upgrade by pip: \n\033[1;32mpip index versions commandline_config\npip install commandline --upgrade\033[0m")
+
 
 def check_type(v):
     if isinstance(v, bool):
@@ -42,6 +46,8 @@ def check_type(v):
         return "str"
 
 # 配置类
+
+
 class Config(dict):
     """
     Makes a dictionary behave like an object,with attribute-style access.
