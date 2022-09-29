@@ -10,7 +10,7 @@ If you think this tool is good, please gently click the **Star** button in the u
 
 # Easy-to-use Commandline Configuration Tool
 
-A library for users to write (experiment in research) configurations in Python Dict or JSON format, read and write parameter value via dot . in code, while can read parameters from the command line to modify values.
+A library for users to write (experiment in research) configurations in Python Dict or JSON format, read and write parameter value via `dot .` in code, while can read parameters from the command line to modify values.
 
 标签 Labels： Python, Command Line, commandline, config, configuration, parameters, 命令行，配置，传参，参数值修改。
 
