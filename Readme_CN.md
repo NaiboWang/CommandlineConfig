@@ -21,7 +21,7 @@
 
 ```python
 # 通过pip安装
-pip install commandline_config
+pip3 install commandline_config
 
 # 导包
 from commandline_config import Config
@@ -104,25 +104,25 @@ python example.py -h
 * 1. 通过pip安装：
 
   ```shell
-  pip install commandline_config
+  pip3 install commandline_config
   ```
   
   已安装的可通过以下命令升级：
   
   ```shell
-  pip install commandline_config --upgrade
+  pip3 install commandline_config --upgrade
   ```
 
 * 2. 直接导入github项目中/commandline_config文件夹下的commandline_config.py文件到自己的项目目录中即可，需要安装依赖包prettytable:
   
     ```shell
-    pip install prettytable
+    pip3 install prettytable
     ```
     
     或通过requirements.txt安装：
     
     ```shell
-    pip install -r requirements.txt
+    pip3 install -r requirements.txt
     ```
   
 ### 配置方式

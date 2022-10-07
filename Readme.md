@@ -31,7 +31,7 @@ Github URL: <https://github.com/NaiboWang/CommandlineConfig>
 
 ```python
 # Install via pip
-pip install commandline_config
+pip3 install commandline_config
 
 # import package
 from commandline_config import Config
@@ -118,25 +118,25 @@ There are two ways to install this library:
   
 * 1. Install via pip:
   ```shell
-  pip install commandline_config
+  pip3 install commandline_config
   ```
   
   If already installed, you can upgrade it by the following command:
 
   ```shell
-  pip install commandline_config --upgrade
+  pip3 install commandline_config --upgrade
   ```
   
 * 2. Import the commandline_config.py file directly from the `/commandline_config` folder of the github project into your own project directory, you need to install the dependency package `prettytable`:
 
     ```shell
-    pip install prettytable
+    pip3 install prettytable
     ```
 
     Or install via `requirements.txt`:
   
     ```shell
-    pip install -r requirements.txt
+    pip3 install -r requirements.txt
     ```
   
 ### Configuration Way
