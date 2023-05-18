@@ -16,6 +16,10 @@ A library for users to write (experiment in research) configurations in Python D
 
 Github URL: <https://github.com/NaiboWang/CommandlineConfig>
 
+## Reserved Fields
+
+The following fields are reserved and cannot be used as parameter names: `config_name`.
+
 ## New Features
 
 ### v2.2.*
@@ -69,8 +73,9 @@ python example.py -h
 - [请您Star Please Star](#请您star-please-star)
 - [中文文档](#中文文档)
 - [Easy-to-use Commandline Configuration Tool](#easy-to-use-commandline-configuration-tool)
+  - [Reserved Fields](#reserved-fields)
   - [New Features](#new-features)
-    - [v2.2.*](#v22)
+    - [v2.2.\*](#v22)
   - [Simple Example](#simple-example)
   - [Catalogue](#catalogue)
   - [Usage](#usage)
