@@ -1,9 +1,3 @@
-# 请您Star Please Star
-
-如果你觉得此工具不错，请轻轻点击此页面右上角**Star**按钮增加项目曝光度，谢谢！
-
-If you think this tool is good, please gently click the **Star** button in the upper right corner at this page to increase the project exposure, thank you!
-
 # 中文文档
 
 [点此查看中文文档](https://github.com/NaiboWang/CommandlineConfig/blob/master/Readme_CN.md)
@@ -70,7 +64,6 @@ python example.py -h
 ```
 
 ## Catalogue
-- [请您Star Please Star](#请您star-please-star)
 - [中文文档](#中文文档)
 - [Easy-to-use Commandline Configuration Tool](#easy-to-use-commandline-configuration-tool)
   - [Reserved Fields](#reserved-fields)
